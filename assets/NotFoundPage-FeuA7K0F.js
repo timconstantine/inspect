@@ -1,0 +1,2 @@
+import{F as e,J as t,g as n,h as r,p as i,u as a,z as o}from"./runtime-core.esm-bundler-ChiMl8Ql.js";import{t as s}from"./_plugin-vue_export-helper-CLgcYIH-.js";var c={},l={"page-size":``,flex:``,"flex-col":``,"flex-items-center":``,"w-full":``,"pt-50px":``,"gap-8px":``};function u(s,c){let u=o(`RouterLink`);return e(),i(`div`,l,[c[1]||=a(`div`,null,`This page has no accessible resource`,-1),n(u,{to:`/`},{default:t(()=>[...c[0]||=[r(` Back to home `,-1)]]),_:1})])}var d=s(c,[[`render`,u]]);export{d as default};
+//# sourceMappingURL=NotFoundPage-FeuA7K0F.js.map

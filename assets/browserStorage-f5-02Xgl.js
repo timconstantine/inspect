@@ -1,0 +1,2 @@
+import{i as e}from"./chunk-62oNxeRG.js";import{at as t,ct as n}from"./runtime-core.esm-bundler-ChiMl8Ql.js";import{t as r}from"./localforage-DfYJ3rxR.js";var i=e(r(),1),a=e=>e,o=(e,t)=>{try{return e()}catch{return t()}},s=(e,n,r=a)=>{let i=localStorage.getItem(e);return t(i?o(()=>r(JSON.parse(i)),n):n())},c=async(e,n,r=a)=>{let o=await i.default.getItem(e);return t(o?r(o):n())},l=(e,t)=>{i.default.setItem(e,n(t))},u=(e,t,n,r)=>{let i=String(n);r===void 0?delete e[i]:e[i]=r,l(t,e)};export{s as n,u as r,c as t};
+//# sourceMappingURL=browserStorage-f5-02Xgl.js.map

@@ -1,0 +1,2 @@
+var e=async(e=0)=>new Promise(t=>{setTimeout(t,e)}),t=12e3,n=(e,t,n=`Operation timed out`)=>new Promise((r,i)=>{let a=setTimeout(()=>i(Error(n)),t);e().then(e=>{clearTimeout(a),r(e)},e=>{clearTimeout(a),i(e)})});export{e as n,n as r,t};
+//# sourceMappingURL=async-zX0R8VWF.js.map
