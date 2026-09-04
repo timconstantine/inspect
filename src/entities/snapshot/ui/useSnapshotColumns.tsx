@@ -20,7 +20,7 @@ const useAutoWrapWidthColumn = <T,>(data: TableBaseColumn<T>) => {
             vRect,
             (size: DOMRect) => {
               currentCol.width = Math.max(
-                Math.ceil(size.width + 16), // 16 是 n-data-table-td 的 左右内边距
+                Math.ceil(size.width + 16), // 16 is the left/right padding of n-data-table-td
                 (currentCol.width as number) || 0,
                 Number(currentCol.minWidth || 0),
               );
@@ -42,7 +42,7 @@ export const renderDevice = (row: Snapshot) => {
 export const useSnapshotColumns = () => {
   const ctimeCol = shallowReactive<TableBaseColumn<Snapshot>>({
     key: `id`,
-    title: `创建时间`,
+    title: `Created`,
     fixed: 'left',
     width: `130px`,
     sortOrder: false,
@@ -55,7 +55,7 @@ export const useSnapshotColumns = () => {
   });
   const mtimeCol = shallowReactive<TableBaseColumn<Snapshot>>({
     key: `mtime`,
-    title: `导入时间`,
+    title: `Imported`,
     width: `130px`,
     sortOrder: false,
     sorter(rowA, rowB) {
@@ -73,7 +73,7 @@ export const useSnapshotColumns = () => {
 
   const deviceCol = useAutoWrapWidthColumn<Snapshot>({
     key: `versionRelease`,
-    title: `设备`,
+    title: `Device`,
     filterMultiple: true,
     minWidth: 100,
     filter(value, row) {
@@ -86,7 +86,7 @@ export const useSnapshotColumns = () => {
   const appNameCol = useAutoWrapWidthColumn<Snapshot>({
     key: `appName`,
     minWidth: 100,
-    title: `应用名称`,
+    title: `App name`,
     filterMultiple: true,
     filter(value, row) {
       return value.toString() == getAppInfo(row).name;
@@ -104,7 +104,7 @@ export const useSnapshotColumns = () => {
   });
   const appIdCol = useAutoWrapWidthColumn<Snapshot>({
     key: `appId`,
-    title: `应用ID`,
+    title: `App ID`,
     minWidth: 100,
     cellProps(row) {
       return {
@@ -119,7 +119,7 @@ export const useSnapshotColumns = () => {
   });
   const appVersionCodeCol = useAutoWrapWidthColumn<Snapshot>({
     key: `appVersionCode`,
-    title: `版本代码`,
+    title: `Version code`,
     minWidth: 150,
     render(row) {
       return getAppInfo(row).versionCode;
@@ -127,7 +127,7 @@ export const useSnapshotColumns = () => {
   });
   const appVersionNameCol = useAutoWrapWidthColumn<Snapshot>({
     key: `appVersionName`,
-    title: `版本号`,
+    title: `Version name`,
     minWidth: 150,
     render(row) {
       return <NEllipsis>{getAppInfo(row).versionName}</NEllipsis>;
@@ -136,7 +136,7 @@ export const useSnapshotColumns = () => {
 
   const activityIdCol = shallowReactive<TableBaseColumn<Snapshot>>({
     key: `activityId`,
-    title: `界面ID`,
+    title: `Activity ID`,
     filterMultiple: true,
     filter(value, row) {
       return value.toString() == row.activityId;

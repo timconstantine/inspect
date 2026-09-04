@@ -10,9 +10,9 @@ const emit = defineEmits<{
 
 const { setThemeMode, themeMode } = useTheme();
 const themeOptions = [
-  { label: '跟随系统', value: 'system' },
-  { label: '浅色', value: 'light' },
-  { label: '深色', value: 'dark' },
+  { label: 'Follow system', value: 'system' },
+  { label: 'Light', value: 'light' },
+  { label: 'Dark', value: 'dark' },
 ];
 const closeSettings = () => emit('update:show', false);
 </script>
@@ -21,10 +21,10 @@ const closeSettings = () => emit('update:show', false);
   <NModal
     :show="show"
     preset="dialog"
-    title="设置"
+    title="Settings"
     :maskClosable="false"
     :showIcon="false"
-    positiveText="关闭"
+    positiveText="Close"
     style="width: 600px"
     @positiveClick="closeSettings"
     @close="closeSettings"
@@ -32,7 +32,7 @@ const closeSettings = () => emit('update:show', false);
     @update:show="emit('update:show', $event)"
   >
     <div flex items-center justify-between gap-24px>
-      <span>外观主题</span>
+      <span>Appearance theme</span>
       <NSelect
         :value="themeMode"
         :options="themeOptions"
@@ -42,20 +42,23 @@ const closeSettings = () => emit('update:show', false);
     </div>
     <div class="app-divider" />
     <div flex items-center justify-between gap-24px>
-      <span>关闭生成分享链接弹窗提醒</span>
+      <span>Disable the "generate share link" popup reminder</span>
       <NSwitch
         :value="settingsStore.ignoreUploadWarn"
-        aria-label="关闭生成分享链接弹窗提醒"
+        aria-label="Disable the generate share link popup reminder"
         class="shrink-0"
         @update:value="settingsActions.update({ ignoreUploadWarn: $event })"
       />
     </div>
     <div class="app-divider" />
     <div flex items-center justify-between gap-24px>
-      <span>打开快照页面自动生成分享链接（请确保不含隐私）</span>
+      <span
+        >Auto-generate a share link when opening a snapshot page (make sure it
+        contains no private info)</span
+      >
       <NSwitch
         :value="settingsStore.autoUploadImport"
-        aria-label="打开快照页面自动生成分享链接"
+        aria-label="Auto-generate a share link when opening a snapshot page"
         class="shrink-0"
         @update:value="settingsActions.update({ autoUploadImport: $event })"
       />

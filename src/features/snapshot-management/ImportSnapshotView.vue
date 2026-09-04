@@ -13,7 +13,7 @@ const route = useRoute();
 const router = useRouter();
 
 const loading = shallowRef(true);
-const tip = shallowRef(`加载中...`);
+const tip = shallowRef(`Loading...`);
 
 const goToSnapshot = async (snapshotId: number) => {
   router.replace({
@@ -30,7 +30,7 @@ const { importSnapshotId, actions: snapshotMetadataActions } =
 
 onMounted(async () => {
   if (!isValidUrl(url)) {
-    message.error(`非法URL参数`);
+    message.error(`Invalid URL parameter`);
     await delay(1000);
     router.replace({
       path: `/`,
@@ -65,27 +65,27 @@ onMounted(async () => {
         await delay(500);
         goToSnapshot(snapshot.id);
       } else {
-        tip.value = `获取资源失败`;
+        tip.value = `Failed to fetch the resource`;
       }
     }
   } catch {
     loadingBar.error();
-    tip.value = `加载资源失败`;
+    tip.value = `Failed to load the resource`;
   }
 });
 </script>
 <template>
   <div page-size flex gap-5px pt-40px flex-col flex-items-center>
     <div v-if="!gmOk()" mb-20px>
-      建议安装并启用
+      Install and enable the
       <a
         href="https://github.com/gkd-kit/network-extension"
         target="_blank"
         rel="noopener noreferrer"
       >
-        油猴脚本
+        userscript
       </a>
-      获取更快加载速度
+      for faster loading
     </div>
     <div v-show="loading">
       {{ tip }}

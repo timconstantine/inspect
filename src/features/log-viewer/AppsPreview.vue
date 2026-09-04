@@ -21,7 +21,7 @@ const selectedUser = computed(() => {
 });
 const userOptions = computed(() => {
   return props.data.users.map((user) => ({
-    label: `${user.name} · 用户 ${user.id} · ${user.apps.length} 个应用`,
+    label: `${user.name} · User ${user.id} · ${user.apps.length} apps`,
     value: user.id,
   }));
 });
@@ -46,11 +46,11 @@ const filteredApps = computed(() => {
 });
 
 const columns: DataTableColumns<DeviceApp> = [
-  { key: `name`, title: `应用名称` },
-  { key: `id`, title: `包名` },
+  { key: `name`, title: `App name` },
+  { key: `id`, title: `Package name` },
   {
     key: `version`,
-    title: `版本`,
+    title: `Version`,
     render(app) {
       if (app.versionName && app.versionCode != null) {
         return `${app.versionName} (${app.versionCode})`;
@@ -60,25 +60,25 @@ const columns: DataTableColumns<DeviceApp> = [
   },
   {
     key: `isSystem`,
-    title: `类型`,
+    title: `Type`,
     render(app) {
       if (app.isSystem == null) return `-`;
       return (
         <NTag size="small" type={app.isSystem ? `info` : `default`}>
-          {app.isSystem ? `系统应用` : `用户应用`}
+          {app.isSystem ? `System app` : `User app`}
         </NTag>
       );
     },
   },
   {
     key: `state`,
-    title: `状态`,
+    title: `State`,
     render(app) {
       const states = [
-        app.enabled === false ? `已停用` : undefined,
-        app.hidden ? `已隐藏` : undefined,
+        app.enabled === false ? `Disabled` : undefined,
+        app.hidden ? `Hidden` : undefined,
       ].filter(Boolean);
-      return states.length ? states.join(` · `) : `正常`;
+      return states.length ? states.join(` · `) : `Normal`;
     },
   },
 ];
@@ -95,7 +95,7 @@ const columns: DataTableColumns<DeviceApp> = [
         <NSelect
           v-model:value="selectedUserId"
           :options="userOptions"
-          aria-label="设备用户"
+          aria-label="Device user"
           class="min-w-280px w-40% max-w-420px"
         />
         <TextSearchInput
@@ -103,14 +103,16 @@ const columns: DataTableColumns<DeviceApp> = [
           v-model:match-case="searchOptions.matchCase"
           v-model:whole-word="searchOptions.wholeWord"
           v-model:use-regex="searchOptions.useRegex"
-          placeholder="搜索应用名称、包名或版本"
+          placeholder="Search app name, package name, or version"
           class="ml-auto min-w-320px w-50% max-w-460px"
         />
       </div>
 
       <NEmpty
         v-if="filteredApps.length == 0"
-        :description="query.trim() ? '没有匹配的应用' : '该用户没有应用记录'"
+        :description="
+          query.trim() ? 'No matching apps' : 'This user has no app records'
+        "
         class="min-h-0 flex-1"
       />
       <NDataTable

@@ -34,7 +34,7 @@ export const useTask = <T extends (...args: any[]) => Promise<void>>(
         .finally(() => {
           finished = true;
         });
-      // 避免界面渲染闪烁
+      // avoid a render flicker
       await delay();
       if (finished) return;
       loadingRef.value = true;

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { dateZhCN, zhCN, type GlobalThemeOverrides } from 'naive-ui';
+import { dateEnUS, enUS, type GlobalThemeOverrides } from 'naive-ui';
 import { RouterView } from 'vue-router';
 import { debounce } from 'lodash-es';
 import AppErrorDialog from './ui/AppErrorDialog.vue';
@@ -26,8 +26,8 @@ useEventListener('click', () => {
 <template>
   <NConfigProvider
     abstract
-    :locale="zhCN"
-    :dateLocale="dateZhCN"
+    :locale="enUS"
+    :dateLocale="dateEnUS"
     :theme="appTheme"
     :themeOverrides="themeOverrides"
   >

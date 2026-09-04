@@ -67,10 +67,10 @@ const structuredDetail = computed(() => {
 });
 
 const getStatusLabel = (status: SubscriptionFileSummary['status']) => {
-  if (status == `valid`) return `完整`;
-  if (status == `incomplete`) return `字段不完整`;
-  if (status == `invalid`) return `解析失败`;
-  return `不支持`;
+  if (status == `valid`) return `Complete`;
+  if (status == `incomplete`) return `Incomplete fields`;
+  if (status == `invalid`) return `Parse failed`;
+  return `Unsupported`;
 };
 
 const getStatusType = (status: SubscriptionFileSummary['status']) => {
@@ -95,7 +95,7 @@ const columns: DataTableColumns<SubscriptionFileSummary> = [
   },
   {
     key: `name`,
-    title: `订阅名称`,
+    title: `Subscription name`,
     minWidth: 260,
     ellipsis: { tooltip: true },
     render(item) {
@@ -115,31 +115,31 @@ const columns: DataTableColumns<SubscriptionFileSummary> = [
   },
   {
     key: `version`,
-    title: `版本`,
+    title: `Version`,
     width: 100,
     render: (item) => item.version ?? `-`,
   },
   {
     key: `author`,
-    title: `作者`,
+    title: `Author`,
     width: 150,
     render: (item) => item.author || `-`,
   },
   {
     key: `appsCount`,
-    title: `应用`,
+    title: `Apps`,
     width: 100,
     render: (item) => item.appsCount ?? `-`,
   },
   {
     key: `groups`,
-    title: `全局规则组`,
+    title: `Global rule groups`,
     width: 120,
     render: (item) => item.globalGroupsCount ?? `-`,
   },
   {
     key: `categories`,
-    title: `分类`,
+    title: `Categories`,
     width: 100,
     render: (item) => item.categoriesCount ?? `-`,
   },
@@ -157,9 +157,9 @@ const rowProps = (item: SubscriptionFileSummary) => ({
     class="h-full min-h-0 flex flex-col"
   >
     <DirectoryPreviewHeader
-      title="订阅文件"
+      title="Subscription files"
       :count="items.length"
-      listLabel="订阅列表"
+      listLabel="Subscription list"
       :listActive="activeTab == 'list'"
       :detailText="selectedItem?.name || selectedItem?.fileName"
       :detailTitle="selectedItem?.path"
@@ -175,7 +175,7 @@ const rowProps = (item: SubscriptionFileSummary) => ({
         v-model:match-case="searchOptions.matchCase"
         v-model:whole-word="searchOptions.wholeWord"
         v-model:use-regex="searchOptions.useRegex"
-        placeholder="搜索订阅 ID、名称、作者或版本"
+        placeholder="Search subscription ID, name, author, or version"
         class="flex-none"
         @update:modelValue="resetPage"
         @update:matchCase="resetPage"
@@ -184,7 +184,9 @@ const rowProps = (item: SubscriptionFileSummary) => ({
       />
       <NEmpty
         v-if="pagedItems.length == 0"
-        :description="query.trim() ? '没有匹配的订阅' : '没有订阅文件'"
+        :description="
+          query.trim() ? 'No matching subscriptions' : 'No subscription files'
+        "
         class="min-h-0 flex-1"
       />
       <NDataTable
@@ -209,7 +211,7 @@ const rowProps = (item: SubscriptionFileSummary) => ({
 
     <div v-else class="min-h-0 flex flex-1 flex-col gap-10px">
       <NSpin v-if="detailLoading" show class="min-h-0 flex-1" />
-      <NEmpty v-else-if="!detail" description="请选择一个订阅文件" />
+      <NEmpty v-else-if="!detail" description="Select a subscription file" />
       <div v-else class="min-h-0 flex-1">
         <SubscriptionPreview
           v-if="structuredDetail"
@@ -224,19 +226,23 @@ const rowProps = (item: SubscriptionFileSummary) => ({
           :raw="detail.raw"
         />
         <div v-else class="h-full min-h-0 flex flex-col gap-8px">
-          <NAlert type="warning" title="订阅 JSON 解析失败" class="flex-none">
+          <NAlert
+            type="warning"
+            title="Subscription JSON parsing failed"
+            class="flex-none"
+          >
             {{ detail.error }}
           </NAlert>
           <TextViewer
             v-if="detail.raw"
             :key="detail.path"
             :value="detail.raw"
-            search-placeholder="搜索原始内容"
+            search-placeholder="Search raw content"
             allow-wrap
             copyable
             class="min-h-0 flex-1"
           />
-          <NEmpty v-else description="无法读取原始内容" />
+          <NEmpty v-else description="Couldn't read raw content" />
         </div>
       </div>
     </div>

@@ -14,7 +14,7 @@ const props = withDefaults(
     hint?: string;
   }>(),
   {
-    placeholder: '请输入选择器',
+    placeholder: 'Enter a selector',
     validate: true,
     autosize: () => ({ minRows: 1, maxRows: 10 }),
     hint: '',
@@ -37,10 +37,11 @@ const highlightSegments = computed(() =>
 );
 const feedbackText = computed(() => {
   const result = diagnostic.value;
-  if (result.status == 'valid') return '语法正确';
+  if (result.status == 'valid') return 'Valid syntax';
   if (result.status == 'empty') return props.hint;
-  const position = result.index == null ? '' : ` · 位置 ${result.index + 1}`;
-  return `语法错误${position}：${result.message}`;
+  const position =
+    result.index == null ? '' : ` · position ${result.index + 1}`;
+  return `Syntax error${position}: ${result.message}`;
 });
 
 let textarea: HTMLTextAreaElement | undefined;

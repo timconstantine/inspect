@@ -41,16 +41,16 @@ export const getRuleDiagnosticPresentation = (
 } => {
   if (diagnostic.status == 'matched') {
     return diagnostic.notes.length
-      ? { type: 'warning', label: '部分验证' }
-      : { type: 'success', label: '静态匹配' };
+      ? { type: 'warning', label: 'Partially verified' }
+      : { type: 'success', label: 'Statically matched' };
   }
   if (diagnostic.status == 'not-matched') {
-    return { type: 'default', label: '未匹配' };
+    return { type: 'default', label: 'Not matched' };
   }
   if (diagnostic.status == 'invalid') {
-    return { type: 'error', label: '格式错误' };
+    return { type: 'error', label: 'Format error' };
   }
-  return { type: 'default', label: '等待输入' };
+  return { type: 'default', label: 'Waiting for input' };
 };
 
 const isObject = (value: unknown): value is JsonObject =>
@@ -65,7 +65,7 @@ const toStringArray = (
   if (Array.isArray(value) && value.every((item) => typeof item == 'string')) {
     return { values: value };
   }
-  return { error: `${field} 必须是字符串或字符串数组` };
+  return { error: `${field} must be a string or an array of strings` };
 };
 
 const hasOwn = (value: JsonObject, key: string) =>
@@ -113,7 +113,7 @@ const matchActivity = (
   ) {
     return {
       status: 'mismatch',
-      message: `当前界面 ${snapshot.activityId} 被 excludeActivityIds 排除`,
+      message: `Current screen ${snapshot.activityId} is excluded by excludeActivityIds`,
     };
   }
   if (
@@ -126,43 +126,49 @@ const matchActivity = (
   ) {
     return {
       status: 'mismatch',
-      message: `当前界面 ${snapshot.activityId} 未命中 activityIds`,
+      message: `Current screen ${snapshot.activityId} doesn't match activityIds`,
     };
   }
   return { status: 'valid' };
 };
 
 const runtimeFieldLabels: Record<string, string> = {
-  preKeys: '前置规则执行状态',
-  actionCdKey: '共享冷却状态',
-  actionMaximumKey: '共享执行次数',
-  actionMaximum: '执行次数上限',
-  actionCd: '执行冷却时间',
-  matchDelay: '匹配延迟',
-  actionDelay: '操作延迟',
-  forcedTime: '强制匹配时段',
-  priorityTime: '优先匹配时段',
-  priorityActionMaximum: '优先执行次数',
-  versionCode: '版本代码条件',
-  versionName: '版本名称条件',
-  versionCodes: '版本代码条件',
-  versionNames: '版本名称条件',
-  excludeVersionCodes: '版本代码排除条件',
-  excludeVersionNames: '版本名称排除条件',
+  preKeys: 'Prerequisite rule execution state',
+  actionCdKey: 'Shared cooldown state',
+  actionMaximumKey: 'Shared execution count',
+  actionMaximum: 'Max execution count',
+  actionCd: 'Execution cooldown',
+  matchDelay: 'Match delay',
+  actionDelay: 'Action delay',
+  forcedTime: 'Forced match window',
+  priorityTime: 'Priority match window',
+  priorityActionMaximum: 'Priority execution count',
+  versionCode: 'Version code condition',
+  versionName: 'Version name condition',
+  versionCodes: 'Version code condition',
+  versionNames: 'Version name condition',
+  excludeVersionCodes: 'Version code exclusion condition',
+  excludeVersionNames: 'Version name exclusion condition',
 };
 
 const getRuntimeNotes = (rule: JsonObject, group?: JsonObject): string[] => {
   const notes: string[] = [];
   for (const [key, label] of Object.entries(runtimeFieldLabels)) {
     if (inheritedValue(rule, group, key) != null) {
-      notes.push(`${label}（${key}）依赖运行时状态，本次未验证`);
+      notes.push(
+        `${label} (${key}) depends on runtime state and wasn't verified this time`,
+      );
     }
   }
   if (group?.enable === false) {
-    notes.push('规则组默认禁用，实际是否启用取决于客户端配置');
+    notes.push(
+      `The rule group is disabled by default; whether it's actually enabled depends on the client configuration`,
+    );
   }
   if (rule.enable === false) {
-    notes.push('规则默认禁用，实际是否启用取决于客户端配置');
+    notes.push(
+      `The rule is disabled by default; whether it's actually enabled depends on the client configuration`,
+    );
   }
   return notes;
 };
@@ -180,18 +186,18 @@ const collectGroups = (
   const candidates: RuleCandidate[] = [];
   for (const [groupIndex, groupValue] of groups.entries()) {
     if (!isObject(groupValue)) {
-      return { error: `${basePath}[${groupIndex}] 必须是对象` };
+      return { error: `${basePath}[${groupIndex}] must be an object` };
     }
     const rulesValue = groupValue.rules;
     if (rulesValue == null) {
-      return { error: `${basePath}[${groupIndex}].rules 缺失` };
+      return { error: `${basePath}[${groupIndex}].rules is missing` };
     }
     const rules = Array.isArray(rulesValue) ? rulesValue : [rulesValue];
     for (const [ruleIndex, ruleValue] of rules.entries()) {
       const rule = normalizeRule(ruleValue);
       if (!rule) {
         return {
-          error: `${basePath}[${groupIndex}].rules[${ruleIndex}] 必须是对象或字符串`,
+          error: `${basePath}[${groupIndex}].rules[${ruleIndex}] must be an object or a string`,
         };
       }
       candidates.push({
@@ -209,22 +215,24 @@ const collectCandidates = (
   snapshot: Snapshot,
 ): { candidates?: RuleCandidate[]; error?: string; mismatch?: string } => {
   if (input.apps != null) {
-    if (!Array.isArray(input.apps)) return { error: 'apps 必须是数组' };
+    if (!Array.isArray(input.apps)) return { error: 'apps must be an array' };
     const appIndex = input.apps.findIndex(
       (app) => isObject(app) && app.id == snapshot.appId,
     );
     if (appIndex < 0) {
-      return { mismatch: `apps 中没有当前应用 ${snapshot.appId}` };
+      return {
+        mismatch: `apps doesn't contain the current app ${snapshot.appId}`,
+      };
     }
     const app = input.apps[appIndex];
-    if (!isObject(app)) return { error: `apps[${appIndex}] 必须是对象` };
+    if (!isObject(app)) return { error: `apps[${appIndex}] must be an object` };
     return collectGroups(app.groups, `apps[${appIndex}].groups`);
   }
 
   if (typeof input.id == 'string' && input.groups != null) {
     if (input.id != snapshot.appId) {
       return {
-        mismatch: `规则应用 ${input.id} 与当前应用 ${snapshot.appId} 不一致`,
+        mismatch: `Rule app ${input.id} doesn't match the current app ${snapshot.appId}`,
       };
     }
     return collectGroups(input.groups, 'groups');
@@ -246,7 +254,7 @@ const querySelectors = (
       results.push(parseSelector(source).querySelfOrSelectorAll(rootNode));
     } catch (error) {
       return {
-        error: `${field}[${index}] 选择器非法：${
+        error: `${field}[${index}] invalid selector: ${
           error instanceof Error ? error.message : String(error)
         }`,
       };
@@ -300,7 +308,7 @@ const evaluateCandidate = (
   if (!selectorValues.matches.length && !selectorValues.anyMatches.length) {
     return {
       status: 'invalid',
-      message: `${candidate.path} 的 matches 和 anyMatches 至少需要一个`,
+      message: `${candidate.path} needs at least one of matches or anyMatches`,
     };
   }
 
@@ -336,7 +344,7 @@ const evaluateCandidate = (
   if (missingMatch >= 0) {
     return {
       status: 'not-matched',
-      message: `matches[${missingMatch}] 没有匹配节点`,
+      message: `matches[${missingMatch}] has no matching node`,
       details,
       notes,
     };
@@ -347,7 +355,7 @@ const evaluateCandidate = (
   ) {
     return {
       status: 'not-matched',
-      message: 'anyMatches 中没有选择器匹配节点',
+      message: 'None of the selectors in anyMatches matched a node',
       details,
       notes,
     };
@@ -358,7 +366,7 @@ const evaluateCandidate = (
   if (excludeIndex >= 0) {
     return {
       status: 'not-matched',
-      message: `excludeMatches[${excludeIndex}] 命中排除节点`,
+      message: `excludeMatches[${excludeIndex}] matched an excluded node`,
       details,
       notes,
     };
@@ -369,7 +377,7 @@ const evaluateCandidate = (
   ) {
     return {
       status: 'not-matched',
-      message: 'excludeAllMatches 的所有选择器均命中',
+      message: 'All selectors in excludeAllMatches matched',
       details,
       notes,
     };
@@ -381,7 +389,7 @@ const evaluateCandidate = (
   if (!targetNode) {
     return {
       status: 'not-matched',
-      message: '没有找到规则目标节点',
+      message: 'No target node found for the rule',
       details,
       notes,
     };
@@ -389,8 +397,8 @@ const evaluateCandidate = (
   return {
     status: 'matched',
     message: notes.length
-      ? '静态条件匹配，仍有运行时条件未验证'
-      : '静态条件匹配',
+      ? 'Static conditions matched; runtime conditions are still unverified'
+      : 'Static conditions matched',
     targetNode,
     details,
     notes,
@@ -409,11 +417,14 @@ export const evaluateRuleText = (
   } catch (error) {
     return {
       status: 'invalid',
-      message: `JSON5 格式错误：${error instanceof Error ? error.message : String(error)}`,
+      message: `JSON5 format error: ${error instanceof Error ? error.message : String(error)}`,
     };
   }
   if (!isObject(input)) {
-    return { status: 'invalid', message: '请输入规则、规则组、应用或订阅对象' };
+    return {
+      status: 'invalid',
+      message: 'Enter a rule, rule group, app, or subscription object',
+    };
   }
   const collected = collectCandidates(input, snapshot);
   if (collected.error) return { status: 'invalid', message: collected.error };
@@ -435,7 +446,7 @@ export const evaluateRuleText = (
   return (
     diagnostics[0] ?? {
       status: 'invalid',
-      message: '没有可诊断的规则',
+      message: 'No rule to diagnose',
     }
   );
 };

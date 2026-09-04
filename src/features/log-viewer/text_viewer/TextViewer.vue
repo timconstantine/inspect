@@ -15,7 +15,7 @@ const props = withDefaults(
     sourceLinkContext?: SourceLinkContext;
   }>(),
   {
-    searchPlaceholder: `搜索`,
+    searchPlaceholder: `Search`,
     allowWrap: false,
     copyable: false,
   },
@@ -43,7 +43,7 @@ const { allowWrap: allowWrapRef, wrap, setWrap } = state;
       <div name="text-viewer-toolbar-spacer" class="min-w-0 flex-1" />
       <SearchBar />
       <NCheckbox v-if="allowWrapRef" :checked="wrap" @update:checked="setWrap">
-        自动换行
+        Wrap text
       </NCheckbox>
     </div>
     <div name="text-viewer-content" class="relative min-h-0 min-w-0 flex-1">

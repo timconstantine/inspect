@@ -130,20 +130,20 @@ const setTrackVisible = (visible: boolean) => {
               <GkSvg name="settings" />
             </NButton>
           </template>
-          设置
+          Settings
         </NTooltip>
         <div />
         <NTooltip v-if="screenshotUrl" placement="right">
           <template #trigger>
             <NButton
               text
-              aria-label="创建脱敏副本"
+              aria-label="Create redacted copy"
               @click="setRedactionVisible(true)"
             >
               <GkSvg name="privacy" />
             </NButton>
           </template>
-          创建脱敏副本
+          Create redacted copy
         </NTooltip>
         <NTooltip placement="right">
           <template #trigger>
@@ -151,7 +151,7 @@ const setTrackVisible = (visible: boolean) => {
               <GkSvg name="search-list" />
             </NButton>
           </template>
-          搜索面板
+          Search panel
         </NTooltip>
         <NTooltip placement="right">
           <template #trigger>
@@ -159,7 +159,7 @@ const setTrackVisible = (visible: boolean) => {
               <GkSvg name="prop" />
             </NButton>
           </template>
-          属性面板
+          Attribute panel
         </NTooltip>
         <NTooltip placement="right">
           <template #trigger>
@@ -167,7 +167,7 @@ const setTrackVisible = (visible: boolean) => {
               <GkSvg name="test" />
             </NButton>
           </template>
-          测试规则
+          Test rule
         </NTooltip>
         <div />
         <NTooltip placement="right">
@@ -184,7 +184,7 @@ const setTrackVisible = (visible: boolean) => {
               </NButton>
             </a>
           </template>
-          讨论交流
+          Discussions
         </NTooltip>
         <NTooltip placement="right">
           <template #trigger>
@@ -200,7 +200,7 @@ const setTrackVisible = (visible: boolean) => {
               </NButton>
             </a>
           </template>
-          分享须知
+          Sharing notice
         </NTooltip>
       </div>
       <ScreenshotCard
@@ -249,7 +249,7 @@ const setTrackVisible = (visible: boolean) => {
   </template>
   <div v-else-if="!loading && !redirected" page-size flex flex-col items-center>
     <div mt-160px>
-      <span>快照数据缺失，</span>
+      <span>Snapshot data is missing, </span>
       <a
         href="https://gkd.li/guide/snapshot#share-note"
         target="_blank"
@@ -258,7 +258,7 @@ const setTrackVisible = (visible: boolean) => {
         transition-colors
         hover="color-[rgb(from_currentColor_r_g_b_/_50%)]"
       >
-        查看分享须知
+        see the sharing notice
       </a>
     </div>
   </div>

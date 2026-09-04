@@ -7,7 +7,7 @@ const props = withDefaults(
     size?: `tiny` | `small` | `medium` | `large`;
   }>(),
   {
-    placeholder: `搜索`,
+    placeholder: `Search`,
     size: `medium`,
   },
 );
@@ -46,8 +46,8 @@ const invalidRegex = computed(() => {
                 : 'bg-transparent text-[#475569] hover:bg-[#e2e8f0]'
             "
             :aria-pressed="matchCase"
-            aria-label="区分大小写"
-            title="区分大小写"
+            aria-label="Match case"
+            title="Match case"
             @mousedown.prevent
             @click="matchCase = !matchCase"
           >
@@ -62,8 +62,8 @@ const invalidRegex = computed(() => {
                 : 'bg-transparent text-[#475569] hover:bg-[#e2e8f0]'
             "
             :aria-pressed="wholeWord"
-            aria-label="全词匹配"
-            title="全词匹配"
+            aria-label="Match whole word"
+            title="Match whole word"
             @mousedown.prevent
             @click="wholeWord = !wholeWord"
           >
@@ -78,8 +78,8 @@ const invalidRegex = computed(() => {
                 : 'bg-transparent text-[#475569] hover:bg-[#e2e8f0]'
             "
             :aria-pressed="useRegex"
-            aria-label="使用正则表达式"
-            title="使用正则表达式"
+            aria-label="Use regular expression"
+            title="Use regular expression"
             @mousedown.prevent
             @click="useRegex = !useRegex"
           >

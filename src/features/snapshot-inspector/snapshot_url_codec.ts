@@ -36,7 +36,7 @@ const encodeBase64Url = (value: Uint8Array): string => {
 
 const decodeBase64Url = (value: string): Uint8Array => {
   if (!value || !/^[A-Za-z0-9_-]+$/.test(value) || value.length % 4 == 1) {
-    throw new Error('非法 Base64URL 状态');
+    throw new Error('Invalid Base64URL state');
   }
   const padding = (4 - (value.length % 4)) % 4;
   const binary = atob(
@@ -59,7 +59,7 @@ const readBytes = async (
       totalSize += value.byteLength;
       if (totalSize > maxSize) {
         await reader.cancel();
-        throw new Error('URL 状态解压后过大');
+        throw new Error('Decompressed URL state is too large');
       }
       chunks.push(value);
     }
@@ -122,17 +122,17 @@ export const isDefaultSnapshotUrlState = (state: SnapshotUrlState): boolean =>
 
 const parseState = (value: unknown): SnapshotUrlState => {
   if (!Array.isArray(value) || value.length != 2) {
-    throw new Error('非法 URL 状态结构');
+    throw new Error('Invalid URL state structure');
   }
   const [focusNodeId, queryValues] = value;
   if (focusNodeId !== null && !isValidFocusNodeId(focusNodeId)) {
-    throw new Error('非法节点 ID');
+    throw new Error('Invalid node ID');
   }
   if (
     !Array.isArray(queryValues) ||
     queryValues.length > MAX_SNAPSHOT_URL_QUERY_SIZE
   ) {
-    throw new Error('非法查询历史');
+    throw new Error('Invalid query history');
   }
 
   const queries = queryValues.map((queryValue): SnapshotUrlQuery => {
@@ -143,7 +143,7 @@ const parseState = (value: unknown): SnapshotUrlState => {
       typeof queryValue[1] != 'string' ||
       !queryValue[1]
     ) {
-      throw new Error('非法查询历史项');
+      throw new Error('Invalid query history entry');
     }
     return {
       type: queryValue[0] == 1 ? 'selector' : 'text',
@@ -162,15 +162,17 @@ const serializeState = (state: SnapshotUrlState): Uint8Array => {
     state.focusNodeId !== undefined &&
     !isValidFocusNodeId(state.focusNodeId)
   ) {
-    throw new Error('非法节点 ID');
+    throw new Error('Invalid node ID');
   }
   const queries = state.queries ?? [];
   if (queries.length > MAX_SNAPSHOT_URL_QUERY_SIZE) {
-    throw new Error(`查询历史不能超过 ${MAX_SNAPSHOT_URL_QUERY_SIZE} 条`);
+    throw new Error(
+      `Query history cannot exceed ${MAX_SNAPSHOT_URL_QUERY_SIZE} entries`,
+    );
   }
   const queryValues = queries.map((query) => {
     if ((query.type != 'selector' && query.type != 'text') || !query.value) {
-      throw new Error('非法查询历史项');
+      throw new Error('Invalid query history entry');
     }
     return [query.type == 'selector' ? 1 : 0, query.value] as const;
   });
@@ -178,7 +180,7 @@ const serializeState = (state: SnapshotUrlState): Uint8Array => {
     JSON.stringify([state.focusNodeId ?? null, queryValues]),
   );
   if (bytes.byteLength > MAX_DECODED_STATE_SIZE) {
-    throw new Error('URL 状态内容过大');
+    throw new Error('URL state content is too large');
   }
   return bytes;
 };
@@ -202,7 +204,7 @@ export const encodeSnapshotUrlState = async (
   bytes.set(body, 1);
   const encoded = encodeBase64Url(bytes);
   if (encoded.length > MAX_SNAPSHOT_URL_STATE_LENGTH) {
-    throw new Error('URL 状态参数过长');
+    throw new Error('URL state parameter is too long');
   }
   return encoded;
 };
@@ -218,21 +220,21 @@ export const decodeSnapshotUrlState = async (
   encoded: string,
 ): Promise<SnapshotUrlState> => {
   if (encoded.length > MAX_SNAPSHOT_URL_STATE_LENGTH) {
-    throw new Error('URL 状态参数过长');
+    throw new Error('URL state parameter is too long');
   }
   const bytes = decodeBase64Url(encoded);
   const header = bytes[0];
   if (header >> HEADER_SHIFT != STATE_VERSION) {
-    throw new Error('不支持的 URL 状态版本');
+    throw new Error('Unsupported URL state version');
   }
   if ((header & ~COMPRESSED_FLAG) != STATE_VERSION << HEADER_SHIFT) {
-    throw new Error('非法 URL 状态标记');
+    throw new Error('Invalid URL state flag');
   }
 
   const body = bytes.subarray(1);
   const rawBytes = header & COMPRESSED_FLAG ? await decompress(body) : body;
   if (rawBytes.byteLength > MAX_DECODED_STATE_SIZE) {
-    throw new Error('URL 状态内容过大');
+    throw new Error('URL state content is too large');
   }
   return parseState(JSON.parse(textDecoder.decode(rawBytes)));
 };

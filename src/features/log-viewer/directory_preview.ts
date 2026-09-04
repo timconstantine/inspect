@@ -222,7 +222,7 @@ const getUnsupportedSubscriptionSummary = (
 ): SubscriptionFileSummary => ({
   ...getBaseSubscriptionSummary(path),
   status: `unsupported`,
-  error: `仅支持 JSON 订阅文件`,
+  error: `Only JSON subscription files are supported`,
 });
 
 export const getUnsupportedSubscriptionDetail = (

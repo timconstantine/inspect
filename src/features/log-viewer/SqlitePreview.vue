@@ -71,7 +71,7 @@ worker.onmessage = (event: MessageEvent<SqliteWorkerResponse>) => {
   else task.reject(new Error(response.error));
 };
 worker.onerror = (event) => {
-  const error = new Error(event.message || `SQLite Worker 运行失败`);
+  const error = new Error(event.message || `SQLite Worker failed`);
   for (const task of pending.values()) task.reject(error);
   pending.clear();
 };
@@ -182,7 +182,8 @@ const init = async () => {
 onMounted(init);
 onBeforeUnmount(() => {
   worker.terminate();
-  for (const task of pending.values()) task.reject(new Error(`组件已卸载`));
+  for (const task of pending.values())
+    task.reject(new Error(`Component unmounted`));
   pending.clear();
 });
 
@@ -284,12 +285,12 @@ const tableRows = computed(() => {
     :show="loading"
     class="h-full min-h-0 [&_.n-spin-content]:h-full [&_.n-spin-content]:min-h-0"
   >
-    <NAlert v-if="errorText" type="error" title="数据库无法预览">
+    <NAlert v-if="errorText" type="error" title="Database cannot be previewed">
       {{ errorText }}
     </NAlert>
     <NEmpty
       v-else-if="!loading && tables.length == 0"
-      description="数据库中没有可展示的数据表"
+      description="This database has no tables to display"
     />
     <div v-else name="sqlite-layout" class="h-full min-h-0 flex gap-12px">
       <div
@@ -301,7 +302,7 @@ const tableRows = computed(() => {
           v-model:match-case="tableSearchOptions.matchCase"
           v-model:whole-word="tableSearchOptions.wholeWord"
           v-model:use-regex="tableSearchOptions.useRegex"
-          placeholder="搜索数据表"
+          placeholder="Search tables"
         />
         <div name="sqlite-table-scroll" class="min-h-0 overflow-auto">
           <NButton
@@ -339,8 +340,8 @@ const tableRows = computed(() => {
             name="data"
             :tab="
               selectedTable.count == null
-                ? '数据'
-                : `数据 · ${selectedTable.count}`
+                ? 'Data'
+                : `Data · ${selectedTable.count}`
             "
           >
             <div
@@ -350,7 +351,7 @@ const tableRows = computed(() => {
               <NAlert
                 v-if="dataErrorText"
                 type="warning"
-                title="当前数据表无法读取"
+                title="This table couldn't be read"
                 class="w-full flex-none"
               >
                 {{ dataErrorText }}
@@ -375,7 +376,7 @@ const tableRows = computed(() => {
               </div>
             </div>
           </NTabPane>
-          <NTabPane name="schema" tab="表结构">
+          <NTabPane name="schema" tab="Schema">
             <div
               name="sqlite-schema"
               class="box-border m-0 h-full overflow-auto whitespace-pre-wrap rounded-4px border border-[#e5e7eb] bg-[#fafafa] p-12px font-mono"

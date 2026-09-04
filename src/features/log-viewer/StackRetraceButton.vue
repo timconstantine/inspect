@@ -19,6 +19,6 @@ const emit = defineEmits<{
     :loading="loading"
     @click="emit('toggle')"
   >
-    {{ retraced ? '原始堆栈' : '还原堆栈' }}
+    {{ retraced ? 'Original stack trace' : 'Deobfuscate stack trace' }}
   </NButton>
 </template>

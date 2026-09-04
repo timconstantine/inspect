@@ -41,7 +41,7 @@ export const exportSnapshotAsZip = async (snapshot: Snapshot) => {
 export const exportSnapshotAsImage = async (snapshot: Snapshot) => {
   const fileName = `snapshot-${snapshot.id}.png`;
   saveAs(
-    // 移除固定 image/png MIME，浏览器自动识别二进制格式
+    // omit a fixed image/png MIME type; the browser auto-detects the binary format
     new Blob([(await screenshotStorage.getItem(snapshot.id))!]),
     fileName,
   );

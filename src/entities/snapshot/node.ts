@@ -5,7 +5,7 @@ import type {
   AppInfo,
 } from '@/entities/snapshot/types';
 import type { SizeExt, Position } from '@/shared/types/common';
-// 获取元素id最后一个.后面的内容
+// get the text after the last '.' in the element id
 const getShortName = (fullName: string): string => {
   const lstIndex = fullName.lastIndexOf('.');
   if (lstIndex === -1) {
@@ -19,13 +19,13 @@ const getConnectOperator = (operator: string, index: number): string => {
 };
 
 export const getNodeSelectorText = (
-  curNode: RawNode /* 当前节点 */,
-  isFirst: boolean = true /* 调用时须省略 */,
-  lastIndex: number = 1 /* 调用时须省略 */,
+  curNode: RawNode /* current node */,
+  isFirst: boolean = true /* omit when calling */,
+  lastIndex: number = 1 /* omit when calling */,
 ): string => {
-  // 先处理递归基
+  // handle the base case first
   if (!curNode.parent) {
-    // 当前节点为根节点
+    // current node is the root node
     if (isFirst) {
       return '[parent=null]';
     } else {
@@ -33,8 +33,8 @@ export const getNodeSelectorText = (
     }
   }
   if (curNode.idQf) {
-    // 可以快速查询
-    // （依赖页面结构而不是文本内容，只处理idQf的情况）
+    // quick-queryable
+    // (relies on page structure rather than text content, only handles the idQf case)
     const key = curNode.attr.vid ? 'vid' : 'id';
     const value = curNode.attr.vid || curNode.attr.id;
     if (isFirst) {

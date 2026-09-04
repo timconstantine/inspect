@@ -1,7 +1,7 @@
 import { dialog, message } from '@/shared/services/feedback';
 import { settingsActions, settingsStore } from '@/features/settings/store';
 
-export const showTextDLg = ({ title = `批量分享链接`, content = '' }) => {
+export const showTextDLg = ({ title = `Batch share links`, content = '' }) => {
   dialog.success({
     title,
     style: {
@@ -23,15 +23,15 @@ export const showTextDLg = ({ title = `批量分享链接`, content = '' }) => {
         />
       );
     },
-    positiveText: `复制`,
+    positiveText: `Copy`,
     onPositiveClick() {
       navigator.clipboard
         .writeText(content)
         .then(() => {
-          message.success(`复制成功`);
+          message.success(`Copied`);
         })
         .catch(() => {
-          message.success(`复制失败`);
+          message.success(`Copy failed`);
         });
       return false;
     },
@@ -48,7 +48,7 @@ const NoticeCheckbox = defineComponent(() => {
         }}
         focusable={false}
       >
-        不再提醒
+        Don't show again
       </NCheckbox>
     );
   };
@@ -58,12 +58,18 @@ export const waitShareAgree = async () => {
   if (settingsStore.ignoreUploadWarn) return;
   return new Promise((resolve, reject) => {
     dialog.warning({
-      title: '生成分享链接须知',
+      title: 'Notice about generating share links',
       content() {
         return (
           <div>
-            <div>所有快照上传分享链接均为公开链接，任何人均可访问。</div>
-            <div>请确保快照不包含隐私信息，请勿分享任何敏感信息。</div>
+            <div>
+              All uploaded snapshot share links are public — anyone can access
+              them.
+            </div>
+            <div>
+              Make sure the snapshot doesn't contain private information, and
+              don't share anything sensitive.
+            </div>
             <NoticeCheckbox class="mt-10px" />
           </div>
         );
@@ -71,8 +77,8 @@ export const waitShareAgree = async () => {
       closable: false,
       closeOnEsc: false,
       maskClosable: false,
-      positiveText: '继续上传',
-      negativeText: '取消分享',
+      positiveText: 'Continue uploading',
+      negativeText: 'Cancel sharing',
       onPositiveClick: resolve,
       onNegativeClick: reject,
     });

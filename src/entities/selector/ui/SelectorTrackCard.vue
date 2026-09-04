@@ -84,7 +84,7 @@ const getNodeStyle = (node: AstNode<any>): StyleValue => {
     <div flex justify-between items-center class="[--svg-h:24px]">
       <div flex items-center gap-4px>
         <GkSvg name="path" />
-        <div text="20px/28px" font-bold>选择器路径视图</div>
+        <div text="20px/28px" font-bold>Selector path view</div>
       </div>
       <NButton text @click="onClose">
         <GkSvg name="close" />
@@ -102,7 +102,7 @@ const getNodeStyle = (node: AstNode<any>): StyleValue => {
         />
         <div relative pointer-events-none z-1>
           <div absolute left-8px bottom-8px text="14px/14px #6C6E71">
-            *为简化视图已隐藏无关节点
+            *Unrelated nodes are hidden to simplify the view
           </div>
         </div>
       </div>

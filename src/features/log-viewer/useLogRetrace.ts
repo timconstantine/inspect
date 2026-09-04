@@ -79,7 +79,10 @@ export const useLogRetrace = (options: LogRetraceOptions) => {
     try {
       const result = await retracer.retrace(state.originalText, kind);
       if (result == state.originalText) {
-        if (isCurrent()) message.warning(`没有找到与当前 mapping 匹配的堆栈`);
+        if (isCurrent())
+          message.warning(
+            `No stack trace matching the current mapping was found`,
+          );
         return;
       }
       state.retracedText = result;
@@ -89,7 +92,7 @@ export const useLogRetrace = (options: LogRetraceOptions) => {
       if (error instanceof DOMException && error.name == `AbortError`) return;
       if (!isCurrent()) return;
       message.error(
-        `堆栈还原失败: ${error instanceof Error ? error.message : String(error)}`,
+        `Stack trace deobfuscation failed: ${error instanceof Error ? error.message : String(error)}`,
       );
     } finally {
       state.loading = false;

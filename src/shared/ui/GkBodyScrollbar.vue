@@ -5,7 +5,7 @@ const { y, x } = useWindowScroll();
 const { height: winH, width: winW } = useWindowSize();
 const [bodyH, bodyW] = (() => {
   const body = useElementSize(document.body);
-  // 不知道为什么得到的 w/h 比实际 clientHeight/clientWidth 多出 0.2 或 0.4, 使用 Math.floor 去除
+  // Not sure why the measured w/h comes out 0.2-0.4 larger than the actual clientHeight/clientWidth; Math.floor strips it
   return [
     computed(() => Math.floor(body.height.value)),
     computed(() => Math.floor(body.width.value)),

@@ -18,7 +18,7 @@ const snapshotPage = recordModule(
 const logPage = recordModule(() => import('@/pages/log/LogPage.vue'));
 
 const getGithubAssetId = (v: unknown) => {
-  return String(v).match(/^\d+/)?.[0]; // 丢弃非法字符
+  return String(v).match(/^\d+/)?.[0]; // discard invalid characters
 };
 
 const redirectImport: RouteRecordRedirectOption = (to) => {
@@ -38,18 +38,18 @@ const router = createRouter({
     {
       path: '/',
       component: recordModule(() => import('@/pages/home/HomePage.vue')),
-      meta: { title: '首页' },
+      meta: { title: 'Home' },
     },
     {
       path: '/snapshot/:snapshotId',
       name: 'snapshot',
       component: snapshotPage,
-      meta: { title: '快照' },
+      meta: { title: 'Snapshot' },
     },
     {
       path: '/i',
       component: recordModule(() => import('@/pages/import/ImportPage.vue')),
-      meta: { title: '导入快照' },
+      meta: { title: 'Import snapshot' },
     },
     {
       path: '/i/:github_asset_id',
@@ -66,7 +66,7 @@ const router = createRouter({
           };
         }
       },
-      meta: { title: '快照' },
+      meta: { title: 'Snapshot' },
     },
     {
       path: '/import',
@@ -93,21 +93,21 @@ const router = createRouter({
           return { path: to.path, query, hash: to.hash };
         }
       },
-      meta: { title: '连接设备' },
+      meta: { title: 'Connect device' },
     },
     {
       path: '/selector/library',
       component: recordModule(
         () => import('@/pages/selector-library/SelectorLibraryPage.vue'),
       ),
-      meta: { title: '选择器库' },
+      meta: { title: 'Selector library' },
     },
     {
       path: '/selector',
       component: recordModule(
         () => import('@/pages/selector/SelectorPage.vue'),
       ),
-      meta: { title: '选择器' },
+      meta: { title: 'Selector' },
     },
     {
       path: '/svg',
@@ -125,7 +125,7 @@ const router = createRouter({
           return getKnownLogRoute(queryUrl);
         }
       },
-      meta: { title: '日志包查看器' },
+      meta: { title: 'Log archive viewer' },
     },
     {
       path: '/log/:pathMatch(.*)*',
@@ -133,7 +133,7 @@ const router = createRouter({
       beforeEnter(to) {
         if (!isValidLogPath(to.params.pathMatch)) return { path: '/404' };
       },
-      meta: { title: '日志包查看器' },
+      meta: { title: 'Log archive viewer' },
     },
     {
       path: '/:pathMatch(.*)*',
@@ -150,7 +150,7 @@ router.beforeEach((to) => {
 
 if (import.meta.env.PROD) {
   setTimeout(() => {
-    // 预加载所有路由组件
+    // preload all route components
     routeModules.forEach((v) => v());
   }, 3000);
 }

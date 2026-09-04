@@ -19,7 +19,7 @@ const source = ref('');
 const clipboard = useClipboard({ source, legacy: true });
 const copy = async (text: string) => {
   await clipboard.copy(text);
-  message.success('复制成功');
+  message.success('Copied');
 };
 </script>
 <template>
@@ -28,9 +28,9 @@ const copy = async (text: string) => {
       <NInput
         v-model="search"
         :style="{ width: '320px' }"
-        placeholder="请输入图标名称"
+        placeholder="Enter an icon name"
       />
-      <div>共存在 {{ svgIds.length }} 个图标</div>
+      <div>{{ svgIds.length }} icons total</div>
     </div>
     <div
       p-16px

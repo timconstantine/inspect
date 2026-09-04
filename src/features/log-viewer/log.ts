@@ -127,7 +127,7 @@ export const loadLogArchive = async (
 ): Promise<LogArchive> => {
   const compressedSize = input instanceof Blob ? input.size : input.byteLength;
   if (compressedSize > MAX_ZIP_SIZE) {
-    throw new Error(`ZIP 文件不能超过 ${formatBytes(MAX_ZIP_SIZE)}`);
+    throw new Error(`ZIP file cannot exceed ${formatBytes(MAX_ZIP_SIZE)}`);
   }
   const data =
     input instanceof Blob
@@ -143,7 +143,7 @@ export const loadLogArchive = async (
   const zip = await loadAsync(data);
   const files = Object.values(zip.files).filter((file) => !file.dir);
   if (files.length > MAX_ENTRY_COUNT) {
-    throw new Error(`ZIP 内文件数量不能超过 ${MAX_ENTRY_COUNT}`);
+    throw new Error(`ZIP file count cannot exceed ${MAX_ENTRY_COUNT}`);
   }
   let uncompressedSize = 0;
   const readBudget = { total: 0, sizes: new Map<string, number>() };
@@ -153,7 +153,9 @@ export const loadLogArchive = async (
       file.unsafeOriginalName &&
       file.unsafeOriginalName.replaceAll(`\\`, `/`) != file.name
     ) {
-      throw new Error(`ZIP 包含不安全路径: ${file.unsafeOriginalName}`);
+      throw new Error(
+        `ZIP contains an unsafe path: ${file.unsafeOriginalName}`,
+      );
     }
     const size = file._data?.uncompressedSize || 0;
     uncompressedSize += size;
@@ -164,7 +166,7 @@ export const loadLogArchive = async (
       pathParts.length > MAX_ENTRY_PATH_DEPTH ||
       pathParts.some((part) => !part || part.length > MAX_ENTRY_SEGMENT_SIZE)
     ) {
-      throw new Error(`ZIP 条目路径超出预览限制: ${path}`);
+      throw new Error(`ZIP entry path exceeds the preview limit: ${path}`);
     }
     return {
       path,
@@ -178,11 +180,11 @@ export const loadLogArchive = async (
   });
   if (uncompressedSize > MAX_UNCOMPRESSED_SIZE) {
     throw new Error(
-      `ZIP 解压后总大小不能超过 ${formatBytes(MAX_UNCOMPRESSED_SIZE)}`,
+      `Total uncompressed ZIP size cannot exceed ${formatBytes(MAX_UNCOMPRESSED_SIZE)}`,
     );
   }
   if (uncompressedSize != metadata.totalUncompressedSize) {
-    throw new Error(`ZIP 中央目录大小信息不一致`);
+    throw new Error(`ZIP central directory size information is inconsistent`);
   }
   const paths = new Set(entries.map((entry) => entry.path));
   for (const entry of entries) {
@@ -190,7 +192,9 @@ export const loadLogArchive = async (
     let parentPath = parts[0];
     for (let index = 1; index < parts.length; index++) {
       if (paths.has(parentPath)) {
-        throw new Error(`ZIP 同时包含文件及其子路径: ${parentPath}`);
+        throw new Error(
+          `ZIP contains both a file and a sub-path of it: ${parentPath}`,
+        );
       }
       parentPath += `/${parts[index]}`;
     }
@@ -216,7 +220,9 @@ const readEntryBytesOnce = async (
   sizeLimit = MAX_TEXT_SIZE,
 ) => {
   if (entry.size > sizeLimit) {
-    throw new Error(`${entry.name} 超过可预览上限 ${formatBytes(sizeLimit)}`);
+    throw new Error(
+      `${entry.name} exceeds the previewable limit of ${formatBytes(sizeLimit)}`,
+    );
   }
   const knownSize = entry.readBudget.sizes.get(entry.path);
   return new Promise<Uint8Array>((resolve, reject) => {
@@ -235,7 +241,9 @@ const readEntryBytesOnce = async (
         if (settled) return;
         if (byteLength + chunk.byteLength > sizeLimit) {
           fail(
-            new Error(`${entry.name} 超过可预览上限 ${formatBytes(sizeLimit)}`),
+            new Error(
+              `${entry.name} exceeds the previewable limit of ${formatBytes(sizeLimit)}`,
+            ),
           );
           return;
         }
@@ -243,7 +251,11 @@ const readEntryBytesOnce = async (
           knownSize == null &&
           entry.readBudget.total + chunk.byteLength > MAX_UNCOMPRESSED_SIZE
         ) {
-          fail(new Error(`ZIP 实际解压大小超过可预览上限`));
+          fail(
+            new Error(
+              `Actual uncompressed ZIP size exceeds the previewable limit`,
+            ),
+          );
           return;
         }
         byteLength += chunk.byteLength;
@@ -312,7 +324,7 @@ export const getDatabaseFiles = async (
     mainEntry.size + (walEntry?.size || 0) + (shmEntry?.size || 0);
   if (totalSize > MAX_DATABASE_SIZE) {
     throw new Error(
-      `数据库文件组超过可预览上限 ${formatBytes(MAX_DATABASE_SIZE)}`,
+      `Database file group exceeds the previewable limit of ${formatBytes(MAX_DATABASE_SIZE)}`,
     );
   }
   const database = await readEntryBytes(mainEntry, MAX_DATABASE_SIZE);
@@ -335,7 +347,7 @@ export const decodeLogText = (data: Uint8Array) => {
       lineCount++;
     }
     if (lineCount > MAX_TEXT_LINE_COUNT) {
-      throw new Error(`文本行数不能超过 ${MAX_TEXT_LINE_COUNT}`);
+      throw new Error(`Text line count cannot exceed ${MAX_TEXT_LINE_COUNT}`);
     }
   }
   return text;

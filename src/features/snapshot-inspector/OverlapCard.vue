@@ -44,11 +44,11 @@ const updateLayout = (value: GkDraggableCardValue) => {
     >
       <template #header>
         <div :ref="onRef" cursor-move>
-          位置
+          Position
           <span class="app-subtle" px-2px>{{
             `${focusPosition.x.toFixed(0)},${focusPosition.y.toFixed(0)}`
           }}</span>
-          存在 {{ overlapNodes.length }} 个层叠节点
+          has {{ overlapNodes.length }} overlapping node(s)
         </div>
       </template>
       <NSpace

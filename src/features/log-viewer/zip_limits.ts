@@ -13,7 +13,7 @@ export const assertSafeZipStructure = (
   data: Uint8Array,
   limits: ZipStructureLimits,
 ) => {
-  if (data.byteLength < EOCD_MIN_SIZE) throw new Error(`不是有效的 ZIP 文件`);
+  if (data.byteLength < EOCD_MIN_SIZE) throw new Error(`Not a valid ZIP file`);
   const view = new DataView(data.buffer, data.byteOffset, data.byteLength);
   const searchStart = Math.max(
     0,
@@ -34,7 +34,7 @@ export const assertSafeZipStructure = (
       break;
     }
   }
-  if (eocdOffset < 0) throw new Error(`不是有效的 ZIP 文件`);
+  if (eocdOffset < 0) throw new Error(`Not a valid ZIP file`);
 
   const diskNumber = view.getUint16(eocdOffset + 4, true);
   const centralDisk = view.getUint16(eocdOffset + 6, true);
@@ -50,17 +50,17 @@ export const assertSafeZipStructure = (
     centralSize == 0xffffffff ||
     centralOffset == 0xffffffff
   ) {
-    throw new Error(`不支持分卷或 ZIP64 日志包`);
+    throw new Error(`Multi-volume or ZIP64 log archives are not supported`);
   }
   if (entryCount > limits.maxEntries) {
-    throw new Error(`ZIP 内条目数量不能超过 ${limits.maxEntries}`);
+    throw new Error(`ZIP entry count cannot exceed ${limits.maxEntries}`);
   }
   if (
     centralOffset > eocdOffset ||
     centralSize > eocdOffset - centralOffset ||
     centralOffset + centralSize != eocdOffset
   ) {
-    throw new Error(`ZIP 中央目录损坏`);
+    throw new Error(`ZIP central directory is corrupted`);
   }
 
   let offset = centralOffset;
@@ -71,36 +71,37 @@ export const assertSafeZipStructure = (
       offset + 46 > eocdOffset ||
       view.getUint32(offset, true) != CENTRAL_FILE_SIGNATURE
     ) {
-      throw new Error(`ZIP 中央目录损坏`);
+      throw new Error(`ZIP central directory is corrupted`);
     }
     const compressedSize = view.getUint32(offset + 20, true);
     const uncompressedSize = view.getUint32(offset + 24, true);
     if (compressedSize == 0xffffffff || uncompressedSize == 0xffffffff) {
-      throw new Error(`不支持 ZIP64 日志包`);
+      throw new Error(`ZIP64 log archives are not supported`);
     }
     const nameLength = view.getUint16(offset + 28, true);
     if (nameLength > limits.maxEntryNameSize) {
-      throw new Error(`ZIP 条目路径过长`);
+      throw new Error(`ZIP entry path is too long`);
     }
     const extraLength = view.getUint16(offset + 30, true);
     const commentLength = view.getUint16(offset + 32, true);
     const nextOffset = offset + 46 + nameLength + extraLength + commentLength;
-    if (nextOffset > eocdOffset) throw new Error(`ZIP 中央目录损坏`);
+    if (nextOffset > eocdOffset)
+      throw new Error(`ZIP central directory is corrupted`);
     actualEntryCount++;
     if (actualEntryCount > limits.maxEntries) {
-      throw new Error(`ZIP 内条目数量不能超过 ${limits.maxEntries}`);
+      throw new Error(`ZIP entry count cannot exceed ${limits.maxEntries}`);
     }
     totalUncompressedSize += uncompressedSize;
     if (
       !Number.isSafeInteger(totalUncompressedSize) ||
       totalUncompressedSize > limits.maxUncompressedSize
     ) {
-      throw new Error(`ZIP 解压后总大小超过限制`);
+      throw new Error(`Total uncompressed ZIP size exceeds the limit`);
     }
     offset = nextOffset;
   }
   if (actualEntryCount != entryCount || offset != eocdOffset) {
-    throw new Error(`ZIP 中央目录条目数量不一致`);
+    throw new Error(`ZIP central directory entry count mismatch`);
   }
   return { entryCount, totalUncompressedSize };
 };

@@ -12,6 +12,10 @@ const port = 8444;
 
 export default defineConfig(() => {
   return {
+    // GitHub Pages project sites are served from a /<repo>/ subpath, so
+    // asset URLs need that prefix. Set GH_PAGES=ON when building for that
+    // deployment target; all other build/dev commands are unaffected.
+    base: process.env.GH_PAGES == `ON` ? `/inspect/` : `/`,
     worker: {
       format: `es` as const,
     },

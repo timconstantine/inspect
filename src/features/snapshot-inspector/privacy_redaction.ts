@@ -83,7 +83,7 @@ const canvasToPng = (canvas: HTMLCanvasElement) =>
   new Promise<ArrayBuffer>((resolve, reject) => {
     canvas.toBlob((blob) => {
       if (!blob) {
-        reject(new Error('无法生成脱敏图片'));
+        reject(new Error('Failed to generate the redacted image'));
         return;
       }
       void blob.arrayBuffer().then(resolve, reject);
@@ -100,7 +100,8 @@ export const renderRedactedScreenshot = async (
     canvas.width = image.width;
     canvas.height = image.height;
     const context = canvas.getContext('2d');
-    if (!context) throw new Error('浏览器不支持图片脱敏');
+    if (!context)
+      throw new Error(`This browser doesn't support image redaction`);
     context.drawImage(image, 0, 0);
     context.fillStyle = '#000';
     for (const rawRect of rectangles) {

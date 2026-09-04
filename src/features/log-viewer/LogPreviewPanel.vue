@@ -103,21 +103,21 @@ const emit = defineEmits<{
             :secondary="appsView == 'users'"
             @click="emit('update:appsView', 'users')"
           >
-            按用户查看
+            By user
           </NButton>
           <NButton
             :type="appsView == 'raw' ? 'primary' : 'default'"
             :secondary="appsView == 'raw'"
             @click="emit('update:appsView', 'raw')"
           >
-            原始 JSON
+            Raw JSON
           </NButton>
         </NButtonGroup>
         <span class="mx-6px h-16px border-l border-[#e2e8f0]" />
-        <span class="text-[#64748b]">应用安装记录</span>
+        <span class="text-[#64748b]">Installed apps</span>
         <span class="font-600">{{ appsData.totalApps }}</span>
         <span class="mx-4px text-[#cbd5e1]">·</span>
-        <span class="text-[#64748b]">设备用户</span>
+        <span class="text-[#64748b]">Device users</span>
         <span class="font-600">{{ appsData.users.length }}</span>
       </div>
     </div>
@@ -126,7 +126,7 @@ const emit = defineEmits<{
       <NSpin v-if="previewLoading" show class="h-full w-full" />
       <NEmpty
         v-else-if="previewKind == 'none'"
-        description="该日志包没有可预览内容"
+        description="This log archive has no previewable content"
       />
       <div
         v-else-if="previewKind == 'text' || previewKind == 'invalid-json'"
@@ -136,7 +136,7 @@ const emit = defineEmits<{
         <NAlert
           v-if="previewKind == 'invalid-json'"
           type="warning"
-          title="JSON 解析失败，以下为原始内容"
+          title="JSON parsing failed - showing raw content below"
           class="flex-none"
         >
           {{ jsonError }}
@@ -145,7 +145,7 @@ const emit = defineEmits<{
           :key="selectedEntry?.path"
           :value="previewText"
           :documentKey="selectedEntry?.path"
-          search-placeholder="搜索当前文件"
+          search-placeholder="Search current file"
           allow-wrap
           copyable
         >
@@ -242,7 +242,7 @@ const emit = defineEmits<{
         :app-names="appNames"
         :subscription-names="subscriptionNames"
       />
-      <NEmpty v-else description="该文件不支持预览" />
+      <NEmpty v-else description="Preview not supported for this file" />
     </div>
   </div>
 </template>

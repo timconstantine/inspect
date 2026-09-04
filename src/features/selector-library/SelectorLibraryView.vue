@@ -43,10 +43,10 @@ const importPending = shallowRef(false);
 let editorRevision = 0;
 
 const scopeFilterOptions = [
-  { label: '全部范围', value: 'all' },
-  { label: '全局', value: 'global' },
-  { label: '应用内全部界面', value: 'app' },
-  { label: '指定界面', value: 'activity' },
+  { label: 'All scopes', value: 'all' },
+  { label: 'Global', value: 'global' },
+  { label: 'All activities in app', value: 'app' },
+  { label: 'Specific activity', value: 'activity' },
 ];
 const visibleItems = computed(() =>
   filterSelectorPresets(selectorLibrary.items, query.value).filter(
@@ -59,7 +59,9 @@ const tagOptions = computed(() =>
     value: tag,
   })),
 );
-const editorTitle = computed(() => (form.id ? '编辑选择器' : '新增选择器'));
+const editorTitle = computed(() =>
+  form.id ? 'Edit selector' : 'New selector',
+);
 
 const getTestRoute = (selector: string) => ({
   path: '/selector',
@@ -134,7 +136,7 @@ const savePreset = async () => {
     const saved = id
       ? await selectorLibraryActions.update(id, input, updatedAt)
       : await selectorLibraryActions.save(input);
-    message.success(editing ? '选择器已更新' : '选择器已收藏');
+    message.success(editing ? 'Selector updated' : 'Selector saved');
     if (revision == editorRevision) {
       resetEditor();
     } else if (saved && form.id == id) {
@@ -158,7 +160,7 @@ const removePreset = async (id: string) => {
   try {
     await selectorLibraryActions.remove(id);
     if (form.id == id) resetEditor();
-    message.success('选择器已删除');
+    message.success('Selector deleted');
   } catch (error) {
     message.error(error instanceof Error ? error.message : String(error));
   }
@@ -191,10 +193,10 @@ const importLibrary = async () => {
     const count = await selectorLibraryActions.importItems(
       JSON.parse(await file.text()),
     );
-    message.success(`已导入 ${count} 条选择器`);
+    message.success(`Imported ${count} selector(s)`);
   } catch (error) {
     message.error(
-      `导入失败：${error instanceof Error ? error.message : String(error)}`,
+      `Import failed: ${error instanceof Error ? error.message : String(error)}`,
     );
   } finally {
     importPending.value = false;
@@ -207,17 +209,17 @@ const importLibrary = async () => {
     <div class="flex items-center gap-12px">
       <PageBackButton />
       <GkSvg name="selector-library" class="text-24px" />
-      <span class="text-20px font-600">选择器库</span>
+      <span class="text-20px font-600">Selector library</span>
       <NTag size="small" :bordered="false">
-        {{ selectorLibrary.items.length }} 条
+        {{ selectorLibrary.items.length }} item(s)
       </NTag>
       <div flex-1 />
-      <NButton :loading="importPending" @click="openImportFile">导入</NButton>
+      <NButton :loading="importPending" @click="openImportFile">Import</NButton>
       <NButton
         :disabled="selectorLibrary.items.length == 0"
         @click="exportLibrary"
       >
-        导出
+        Export
       </NButton>
       <input
         ref="localFileInput"
@@ -235,38 +237,38 @@ const importLibrary = async () => {
         class="library-editor w-360px shrink-0 overflow-auto"
       >
         <NForm labelPlacement="top">
-          <NFormItem label="名称">
+          <NFormItem label="Name">
             <NInput
               :value="form.name"
-              placeholder="例如：关闭按钮"
+              placeholder="e.g. Close button"
               @update:value="updateName"
             />
           </NFormItem>
-          <NFormItem label="选择器">
+          <NFormItem label="Selector">
             <SelectorSyntaxInput
               :value="form.selector"
-              placeholder="请输入合法的选择器"
+              placeholder="Enter a valid selector"
               :autosize="{ minRows: 4, maxRows: 8 }"
-              hint="输入后自动校验选择器语法"
+              hint="Syntax is validated automatically as you type"
               @update:value="updateSelector"
             />
           </NFormItem>
-          <NFormItem label="适用应用">
+          <NFormItem label="Applies to app">
             <NInput
               :value="form.appId"
-              placeholder="留空表示全局"
+              placeholder="Leave blank for global"
               @update:value="updateAppId"
             />
           </NFormItem>
-          <NFormItem label="适用界面">
+          <NFormItem label="Applies to activity">
             <NInput
               :value="form.activityId"
               :disabled="!form.appId.trim()"
-              placeholder="留空表示该应用内全部界面"
+              placeholder="Leave blank for all activities in this app"
               @update:value="updateActivityId"
             />
           </NFormItem>
-          <NFormItem label="标签">
+          <NFormItem label="Tags">
             <NSelect
               :value="form.tags"
               :options="tagOptions"
@@ -275,29 +277,29 @@ const importLibrary = async () => {
               tag
               clearable
               maxTagCount="responsive"
-              placeholder="选择已有标签或输入新标签"
+              placeholder="Choose an existing tag or type a new one"
               @update:value="updateTags"
             />
           </NFormItem>
-          <NFormItem label="说明">
+          <NFormItem label="Description">
             <NInput
               :value="form.description"
               type="textarea"
-              placeholder="记录用途或注意事项"
+              placeholder="Note its purpose or things to watch out for"
               :autosize="{ minRows: 2, maxRows: 5 }"
               @update:value="updateDescription"
             />
           </NFormItem>
         </NForm>
         <div class="flex justify-end gap-8px">
-          <NButton v-if="form.id" @click="resetEditor">取消编辑</NButton>
+          <NButton v-if="form.id" @click="resetEditor">Cancel edit</NButton>
           <NButton
             type="primary"
             :loading="savePending"
             :disabled="!form.name.trim() || !form.selector.trim()"
             @click="savePreset"
           >
-            {{ form.id ? '保存修改' : '添加到库' }}
+            {{ form.id ? 'Save changes' : 'Add to library' }}
           </NButton>
         </div>
       </NCard>
@@ -311,7 +313,7 @@ const importLibrary = async () => {
           <NInput
             :value="query"
             clearable
-            placeholder="搜索名称、选择器、标签、应用或界面"
+            placeholder="Search name, selector, tags, app, or activity"
             @update:value="updateQuery"
           />
           <NSelect
@@ -338,7 +340,7 @@ const importLibrary = async () => {
                   {{ tag }}
                 </NTag>
                 <span class="ml-auto text-12px" style="color: var(--app-muted)">
-                  使用 {{ preset.useCount }} 次
+                  Used {{ preset.useCount }} time(s)
                 </span>
               </div>
               <div
@@ -355,26 +357,26 @@ const importLibrary = async () => {
               </div>
               <div class="mt-10px flex justify-end gap-8px">
                 <NButton size="small" @click="copySelector(preset.selector)">
-                  复制
+                  Copy
                 </NButton>
                 <RouterLink :to="getTestRoute(preset.selector)">
-                  <NButton size="small">测试</NButton>
+                  <NButton size="small">Test</NButton>
                 </RouterLink>
                 <NButton size="small" @click="editPreset(preset)">
-                  编辑
+                  Edit
                 </NButton>
                 <NPopconfirm @positiveClick="removePreset(preset.id)">
                   <template #trigger>
                     <NButton size="small" type="error" secondary>
-                      删除
+                      Delete
                     </NButton>
                   </template>
-                  删除选择器“{{ preset.name }}”？
+                  Delete selector "{{ preset.name }}"?
                 </NPopconfirm>
               </div>
             </div>
           </div>
-          <NEmpty v-else description="没有匹配的选择器" />
+          <NEmpty v-else description="No matching selectors" />
         </NScrollbar>
       </NCard>
     </div>

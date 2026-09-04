@@ -84,7 +84,7 @@ const JsonNode = defineComponent({
             </span>
             {oversized ? (
               <span class="text-[#b45309]">
-                结构过大，请切换到原始 JSON 查看
+                Structure too large, switch to raw JSON to view
               </span>
             ) : null}
           </div>
@@ -159,24 +159,29 @@ const searchResults = computed<SearchResult[]>(() => {
     animated
     class="h-full [&_.n-tab-pane]:h-full [&_.n-tab-pane]:min-h-0 [&_.n-tabs-pane-wrapper]:h-full [&_.n-tabs-pane-wrapper]:min-h-0"
   >
-    <NTabPane name="structured" tab="结构化">
+    <NTabPane name="structured" tab="Structured">
       <div flex flex-col gap-10px h-full>
         <TextSearchInput
           v-model="query"
           v-model:match-case="searchOptions.matchCase"
           v-model:whole-word="searchOptions.wholeWord"
           v-model:use-regex="searchOptions.useRegex"
-          placeholder="搜索键或值，最多展示 200 条结果"
+          placeholder="Search keys or values, showing up to 200 results"
         />
         <div
           name="json-structure-scroll"
           class="min-h-0 flex-1 overflow-auto px-4px pb-24px pt-8px font-mono text-13px"
         >
-          <NAlert v-if="structureTooLarge" type="warning" title="JSON 结构过大">
-            为避免占用过多内存，请切换到“原始 JSON”查看和搜索。
+          <NAlert
+            v-if="structureTooLarge"
+            type="warning"
+            title="JSON structure too large"
+          >
+            To avoid using too much memory, switch to "Raw JSON" to view and
+            search.
           </NAlert>
           <template v-else-if="query.trim()">
-            <NEmpty v-if="searchResults.length == 0" description="没有匹配项" />
+            <NEmpty v-if="searchResults.length == 0" description="No matches" />
             <div
               v-else
               name="json-search-results"
@@ -199,7 +204,7 @@ const searchResults = computed<SearchResult[]>(() => {
         </div>
       </div>
     </NTabPane>
-    <NTabPane name="raw" tab="原始 JSON">
+    <NTabPane name="raw" tab="Raw JSON">
       <RawJsonPreview :value="value" :raw="raw" />
     </NTabPane>
   </NTabs>

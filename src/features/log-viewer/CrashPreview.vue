@@ -73,10 +73,10 @@ const getVersionText = (name: string | undefined, code: number | undefined) => {
 };
 
 const getStatusLabel = (status: CrashSummary['status']) => {
-  if (status == `valid`) return `完整`;
-  if (status == `incomplete`) return `字段不完整`;
-  if (status == `invalid`) return `解析失败`;
-  return `不支持`;
+  if (status == `valid`) return `Complete`;
+  if (status == `incomplete`) return `Incomplete fields`;
+  if (status == `invalid`) return `Parse failed`;
+  return `Unsupported`;
 };
 
 const getStatusType = (status: CrashSummary['status']) => {
@@ -95,14 +95,14 @@ const openDetail = (item: CrashSummary) => {
 const columns: DataTableColumns<CrashSummary> = [
   {
     key: `timestamp`,
-    title: `时间`,
+    title: `Time`,
     width: 190,
     sorter: (a, b) => (a.timestamp || 0) - (b.timestamp || 0),
     render: (item) => formatCrashTimestamp(item.timestamp),
   },
   {
     key: `name`,
-    title: `异常类型`,
+    title: `Exception type`,
     width: 280,
     ellipsis: { tooltip: true },
     render(item) {
@@ -122,20 +122,20 @@ const columns: DataTableColumns<CrashSummary> = [
   },
   {
     key: `message`,
-    title: `异常消息`,
+    title: `Exception message`,
     width: 360,
     ellipsis: { tooltip: true },
     render: (item) => item.message || item.error || `-`,
   },
   {
     key: `thread`,
-    title: `线程`,
+    title: `Thread`,
     width: 100,
     render: (item) => item.thread || `-`,
   },
   {
     key: `version`,
-    title: `GKD 版本`,
+    title: `GKD version`,
     width: 180,
     render: (item) => getVersionText(item.versionName, item.versionCode),
   },
@@ -148,7 +148,7 @@ const columns: DataTableColumns<CrashSummary> = [
   },
   {
     key: `device`,
-    title: `设备`,
+    title: `Device`,
     width: 260,
     ellipsis: { tooltip: true },
     render: (item) => item.device || `-`,
@@ -164,9 +164,9 @@ const rowProps = (item: CrashSummary) => ({
 <template>
   <div name="crash-preview" class="h-full min-h-0 flex flex-col">
     <DirectoryPreviewHeader
-      title="崩溃记录"
+      title="Crash records"
       :count="items.length"
-      listLabel="崩溃列表"
+      listLabel="Crash list"
       :listActive="activeTab == 'list'"
       :detailText="selectedItem?.fileName"
       :detailTitle="selectedItem?.path"
@@ -183,7 +183,7 @@ const rowProps = (item: CrashSummary) => ({
         v-model:match-case="searchOptions.matchCase"
         v-model:whole-word="searchOptions.wholeWord"
         v-model:use-regex="searchOptions.useRegex"
-        placeholder="搜索异常类型、消息、设备或版本"
+        placeholder="Search exception type, message, device, or version"
         class="flex-none"
         @update:modelValue="resetPage"
         @update:matchCase="resetPage"
@@ -192,7 +192,9 @@ const rowProps = (item: CrashSummary) => ({
       />
       <NEmpty
         v-if="pagedItems.length == 0"
-        :description="query.trim() ? '没有匹配的崩溃记录' : '没有崩溃记录'"
+        :description="
+          query.trim() ? 'No matching crash records' : 'No crash records'
+        "
         class="min-h-0 flex-1"
       />
       <NDataTable
@@ -223,12 +225,12 @@ const rowProps = (item: CrashSummary) => ({
       class="min-h-0 flex flex-1 flex-col gap-10px"
     >
       <NSpin v-if="detailLoading" show class="min-h-0 flex-1" />
-      <NEmpty v-else-if="!detail" description="请选择一条崩溃记录" />
+      <NEmpty v-else-if="!detail" description="Select a crash record" />
       <template v-else>
         <NAlert
           v-if="detail.error"
           type="warning"
-          title="该记录无法完整解析"
+          title="This record couldn't be fully parsed"
           class="flex-none"
         >
           {{ detail.error }}
@@ -240,13 +242,13 @@ const rowProps = (item: CrashSummary) => ({
           labelPlacement="left"
           class="flex-none"
         >
-          <NDescriptionsItem label="时间">
+          <NDescriptionsItem label="Time">
             {{ formatCrashTimestamp(detail.timestamp) }}
           </NDescriptionsItem>
-          <NDescriptionsItem label="线程">
+          <NDescriptionsItem label="Thread">
             {{ detail.thread || '-' }}
           </NDescriptionsItem>
-          <NDescriptionsItem label="GKD 版本">
+          <NDescriptionsItem label="GKD version">
             {{ getVersionText(detail.versionName, detail.versionCode) }}
           </NDescriptionsItem>
           <NDescriptionsItem label="Android">
@@ -257,7 +259,7 @@ const rowProps = (item: CrashSummary) => ({
               )
             }}
           </NDescriptionsItem>
-          <NDescriptionsItem label="设备" :span="2">
+          <NDescriptionsItem label="Device" :span="2">
             {{ detail.device || '-' }}
           </NDescriptionsItem>
         </NDescriptions>
@@ -267,13 +269,13 @@ const rowProps = (item: CrashSummary) => ({
           animated
           class="min-h-0 flex-1 [&_.n-tab-pane]:h-full [&_.n-tab-pane]:min-h-0 [&_.n-tabs-pane-wrapper]:h-full [&_.n-tabs-pane-wrapper]:min-h-0"
         >
-          <NTabPane name="stack" tab="堆栈">
+          <NTabPane name="stack" tab="Stack trace">
             <TextViewer
               v-if="detail.stackTrace"
               :key="`${detail.path}:stack`"
               :value="detail.stackTrace"
               :documentKey="detail.path"
-              search-placeholder="搜索崩溃堆栈"
+              search-placeholder="Search crash stack trace"
               allow-wrap
               copyable
               :sourceLinkContext="sourceLinkContext"
@@ -288,9 +290,9 @@ const rowProps = (item: CrashSummary) => ({
                 />
               </template>
             </TextViewer>
-            <NEmpty v-else description="该记录没有堆栈信息" />
+            <NEmpty v-else description="This record has no stack trace" />
           </NTabPane>
-          <NTabPane name="raw" tab="原始 JSON">
+          <NTabPane name="raw" tab="Raw JSON">
             <RawJsonPreview
               v-if="detail.parsed"
               :value="detail.value"
@@ -300,12 +302,12 @@ const rowProps = (item: CrashSummary) => ({
               v-else-if="detail.raw"
               :key="`${detail.path}:raw`"
               :value="detail.raw"
-              search-placeholder="搜索原始内容"
+              search-placeholder="Search raw content"
               allow-wrap
               copyable
               class="h-full"
             />
-            <NEmpty v-else description="无法读取原始内容" />
+            <NEmpty v-else description="Couldn't read raw content" />
           </NTabPane>
         </NTabs>
       </template>

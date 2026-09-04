@@ -60,13 +60,13 @@ const position = shallowRef<Position>();
 const positionPoint = shallowRef<PositionPoint>();
 
 const outputDepthOptions = [
-  { label: '应用配置', value: 'app' },
-  { label: '规则组', value: 'group' },
-  { label: '单条规则', value: 'rule' },
-  { label: 'TypeScript 文件', value: 'ts' },
+  { label: 'App config', value: 'app' },
+  { label: 'Rule group', value: 'group' },
+  { label: 'Single rule', value: 'rule' },
+  { label: 'TypeScript file', value: 'ts' },
 ];
 const actionOptions = [
-  { label: '使用默认动作', value: '' },
+  { label: 'Use default action', value: '' },
   { label: 'click', value: 'click' },
   { label: 'clickNode', value: 'clickNode' },
   { label: 'clickCenter', value: 'clickCenter' },
@@ -77,9 +77,9 @@ const actionOptions = [
   { label: 'none', value: 'none' },
 ];
 const positionModeOptions = [
-  { label: '节点相对比例', value: 'node-relative' },
-  { label: '节点相对像素', value: 'node-pixel' },
-  { label: '屏幕绝对坐标', value: 'screen' },
+  { label: 'Relative to node (ratio)', value: 'node-relative' },
+  { label: 'Relative to node (pixels)', value: 'node-pixel' },
+  { label: 'Absolute screen coordinates', value: 'screen' },
 ];
 
 const preKeysResult = computed(() => parsePreKeys(form.preKeysText));
@@ -118,7 +118,9 @@ const diagnosticPresentation = computed(() =>
   getRuleDiagnosticPresentation(diagnostic.value),
 );
 const positionText = computed(() =>
-  position.value ? JSON.stringify(position.value) : '点击截图选择动作位置',
+  position.value
+    ? JSON.stringify(position.value)
+    : 'Click the screenshot to choose the action position',
 );
 const markerStyle = computed(() => {
   const point = positionPoint.value;
@@ -146,7 +148,9 @@ const updateAction = (value: string) => {
   form.action = value;
   if (position.value && !isRulePositionAction(value)) {
     clearPosition();
-    message.info('当前动作不支持自定义点击位置，已清除位置');
+    message.info(
+      `This action doesn't support a custom click position; the position was cleared`,
+    );
   }
 };
 const updatePreKeys = (value: string) => {
@@ -221,7 +225,7 @@ const copyOutput = async () => {
     return;
   }
   if (!groupName.value.trim()) {
-    message.error('规则组名称不能为空');
+    message.error('Rule group name cannot be empty');
     return;
   }
   await copy(output.value);
@@ -240,7 +244,7 @@ const resetDialogState = () => {
   <NModal
     :show="show"
     preset="card"
-    title="规则编排器"
+    title="Rule composer"
     class="w-1080px max-w-[calc(100vw-48px)]"
     style="max-height: calc(100vh - 48px)"
     :maskClosable="false"
@@ -248,28 +252,28 @@ const resetDialogState = () => {
     @afterLeave="resetDialogState"
   >
     <div class="grid grid-cols-3 gap-x-12px gap-y-4px">
-      <NFormItem label="输出层级">
+      <NFormItem label="Output depth">
         <NSelect
           :value="form.outputDepth"
           :options="outputDepthOptions"
           @update:value="updateOutputDepth"
         />
       </NFormItem>
-      <NFormItem label="规则组 key">
+      <NFormItem label="Group key">
         <NInputNumber
           :value="form.groupKey"
           class="w-full"
           @update:value="updateGroupKey"
         />
       </NFormItem>
-      <NFormItem label="动作">
+      <NFormItem label="Action">
         <NSelect
           :value="form.action"
           :options="actionOptions"
           @update:value="updateAction"
         />
       </NFormItem>
-      <NFormItem label="规则组名称" class="col-span-2">
+      <NFormItem label="Group name" class="col-span-2">
         <NInput :value="groupName" @update:value="updateGroupName" />
       </NFormItem>
       <NFormItem
@@ -279,11 +283,11 @@ const resetDialogState = () => {
       >
         <NInput
           :value="form.preKeysText"
-          placeholder="例如：1, 2"
+          placeholder="e.g. 1, 2"
           @update:value="updatePreKeys"
         />
       </NFormItem>
-      <NFormItem label="规则组描述" class="col-span-3">
+      <NFormItem label="Group description" class="col-span-3">
         <NInput
           :value="form.groupDescription"
           @update:value="updateGroupDescription"
@@ -296,24 +300,24 @@ const resetDialogState = () => {
         :value="form.includeActivity"
         @update:value="updateIncludeActivity"
       >
-        <template #checked>限制当前界面</template>
-        <template #unchecked>不限界面</template>
+        <template #checked>Limit to current screen</template>
+        <template #unchecked>Not limited to a screen</template>
       </NSwitch>
       <NSwitch :value="form.matchRoot" @update:value="updateMatchRoot">
-        <template #checked>包含 matchRoot</template>
-        <template #unchecked>不含 matchRoot</template>
+        <template #checked>Include matchRoot</template>
+        <template #unchecked>Without matchRoot</template>
       </NSwitch>
       <NSwitch :value="form.includeLimits" @update:value="updateIncludeLimits">
-        <template #checked>包含执行限制</template>
-        <template #unchecked>不含执行限制</template>
+        <template #checked>Include execution limits</template>
+        <template #unchecked>Without execution limits</template>
       </NSwitch>
       <NSwitch
         v-if="exampleUrl || snapshotUrl"
         :value="form.includeReferences"
         @update:value="updateIncludeReferences"
       >
-        <template #checked>包含快照链接</template>
-        <template #unchecked>不含快照链接</template>
+        <template #checked>Include snapshot link</template>
+        <template #unchecked>Without snapshot link</template>
       </NSwitch>
     </div>
 
@@ -324,15 +328,15 @@ const resetDialogState = () => {
     >
       <div class="min-w-0">
         <div class="mb-6px flex items-center gap-8px">
-          <span class="font-600">点击位置</span>
-          <NTag size="small">目标：{{ getNodeLabel(targetNode) }}</NTag>
+          <span class="font-600">Click position</span>
+          <NTag size="small">Target: {{ getNodeLabel(targetNode) }}</NTag>
           <NButton
             v-if="position"
             class="ml-auto"
             size="tiny"
             @click="clearPosition"
           >
-            清除
+            Clear
           </NButton>
         </div>
         <NSelect
@@ -362,7 +366,7 @@ const resetDialogState = () => {
 
       <div class="min-w-0">
         <div class="mb-6px flex items-center gap-8px">
-          <span class="font-600">生成结果</span>
+          <span class="font-600">Generated result</span>
           <NTag size="small" :type="diagnosticPresentation.type">
             {{ diagnosticPresentation.label }}
           </NTag>
@@ -397,13 +401,13 @@ const resetDialogState = () => {
 
     <template #footer>
       <div class="flex justify-end gap-8px">
-        <NButton @click="updateVisible(false)">关闭</NButton>
+        <NButton @click="updateVisible(false)">Close</NButton>
         <NButton
           type="primary"
           :disabled="Boolean(preKeysResult.error) || !groupName.trim()"
           @click="copyOutput"
         >
-          复制结果
+          Copy result
         </NButton>
       </div>
     </template>

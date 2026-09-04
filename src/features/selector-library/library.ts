@@ -139,17 +139,19 @@ export const parseSelectorLibraryPayload = (
     'version' in value &&
     value.version !== SELECTOR_LIBRARY_VERSION
   ) {
-    throw new Error(`不支持的选择器库版本：${String(value.version)}`);
+    throw new Error(
+      `Unsupported selector library version: ${String(value.version)}`,
+    );
   }
   const source =
     isObject(value) && Array.isArray(value.items) ? value.items : value;
   if (!Array.isArray(source)) {
-    throw new Error('选择器库文件必须包含 items 数组');
+    throw new Error('Selector library file must contain an items array');
   }
   return source.map((item, index) => {
     const preset = normalizeSelectorPreset(item);
     if (!preset) {
-      throw new Error(`选择器库第 ${index + 1} 条数据无效`);
+      throw new Error(`Selector library entry ${index + 1} is invalid`);
     }
     return preset;
   });
@@ -163,9 +165,10 @@ export const createSelectorPreset = (
   const scope = normalizeScope(input.scope);
   const appId = normalizeText(input.appId) || undefined;
   const activityId = normalizeText(input.activityId) || undefined;
-  if (scope == 'app' && !appId) throw new Error('应用范围缺少应用 ID');
+  if (scope == 'app' && !appId)
+    throw new Error('App scope is missing an app ID');
   if (scope == 'activity' && (!appId || !activityId)) {
-    throw new Error('界面范围缺少应用 ID 或界面 ID');
+    throw new Error('Activity scope is missing an app ID or activity ID');
   }
   const preset = normalizeSelectorPreset(
     {
@@ -181,10 +184,10 @@ export const createSelectorPreset = (
   );
   if (!preset) {
     if (!normalizeText(input.name) || !normalizeText(input.selector)) {
-      throw new Error('名称和选择器不能为空');
+      throw new Error('Name and selector cannot be empty');
     }
     parseSelector(normalizeText(input.selector));
-    throw new Error('选择器数据无效');
+    throw new Error('Invalid selector data');
   }
   return preset;
 };
@@ -327,9 +330,9 @@ const matchesSelectorPresetContext = (
 };
 
 export const getSelectorPresetScopeLabel = (preset: SelectorPreset) => {
-  if (preset.scope == 'activity') return `界面 · ${preset.activityId}`;
-  if (preset.scope == 'app') return `应用 · ${preset.appId}`;
-  return '全局';
+  if (preset.scope == 'activity') return `Activity · ${preset.activityId}`;
+  if (preset.scope == 'app') return `App · ${preset.appId}`;
+  return 'Global';
 };
 
 export const collectSelectorPresetIdentities = (

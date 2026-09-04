@@ -45,10 +45,10 @@ const canQuickSave = computed(
   () => props.allowSave && Boolean(props.initialSelector?.trim()),
 );
 const scopeOptions = computed(() => {
-  const options = [{ label: '全局', value: 'global' }];
-  if (props.appId) options.push({ label: '当前应用', value: 'app' });
+  const options = [{ label: 'Global', value: 'global' }];
+  if (props.appId) options.push({ label: 'Current app', value: 'app' });
   if (props.appId && props.activityId) {
-    options.push({ label: '当前界面', value: 'activity' });
+    options.push({ label: 'Current activity', value: 'activity' });
   }
   return options;
 });
@@ -81,7 +81,7 @@ const usePreset = (preset: SelectorPreset) => {
   closeDialog();
   void selectorLibraryActions.markUsed(preset.id).catch((error: unknown) => {
     message.warning(
-      `使用统计保存失败：${error instanceof Error ? error.message : String(error)}`,
+      `Failed to save usage stats: ${error instanceof Error ? error.message : String(error)}`,
     );
   });
 };
@@ -90,7 +90,7 @@ const removePreset = async (preset: SelectorPreset) => {
   removingPresetId.value = preset.id;
   try {
     await selectorLibraryActions.remove(preset.id);
-    message.success(`选择器“${preset.name}”已删除`);
+    message.success(`Selector "${preset.name}" deleted`);
   } catch (error) {
     message.error(error instanceof Error ? error.message : String(error));
   } finally {
@@ -117,7 +117,7 @@ const saveCurrentSelector = async () => {
     ) {
       draft.name = '';
       draftRevision += 1;
-      message.success('选择器已收藏');
+      message.success('Selector saved');
     }
   } catch (error) {
     message.error(error instanceof Error ? error.message : String(error));
@@ -131,7 +131,7 @@ const saveCurrentSelector = async () => {
   <NModal
     :show="show"
     preset="card"
-    title="选择器库"
+    title="Selector library"
     class="w-720px max-w-[calc(100vw-48px)]"
     :maskClosable="false"
     @update:show="setDialogVisible"
@@ -140,7 +140,7 @@ const saveCurrentSelector = async () => {
     <NInput
       :value="query"
       clearable
-      placeholder="搜索名称、选择器、标签或适用范围"
+      placeholder="Search name, selector, tags, or scope"
       @update:value="updateQuery"
     />
 
@@ -150,7 +150,7 @@ const saveCurrentSelector = async () => {
         <NInput
           :value="draft.name"
           :disabled="savePending"
-          placeholder="为当前选择器命名"
+          placeholder="Name the current selector"
           @update:value="updateName"
         />
         <NSelect
@@ -166,7 +166,7 @@ const saveCurrentSelector = async () => {
           :disabled="!draft.name.trim()"
           @click="saveCurrentSelector"
         >
-          快速收藏
+          Quick save
         </NButton>
       </div>
       <NEllipsis
@@ -195,7 +195,7 @@ const saveCurrentSelector = async () => {
               {{ tag }}
             </NTag>
             <span class="ml-auto text-12px" style="color: var(--app-muted)">
-              使用 {{ preset.useCount }} 次
+              Used {{ preset.useCount }} time(s)
             </span>
           </div>
           <div
@@ -205,7 +205,7 @@ const saveCurrentSelector = async () => {
           </div>
           <div class="mt-8px flex justify-end gap-8px">
             <NButton size="small" type="primary" @click="usePreset(preset)">
-              使用
+              Use
             </NButton>
             <NPopconfirm @positiveClick="removePreset(preset)">
               <template #trigger>
@@ -214,21 +214,21 @@ const saveCurrentSelector = async () => {
                   type="error"
                   secondary
                   :loading="removingPresetId == preset.id"
-                  >删除</NButton
+                  >Delete</NButton
                 >
               </template>
-              删除选择器“{{ preset.name }}”？
+              Delete selector "{{ preset.name }}"?
             </NPopconfirm>
           </div>
         </div>
       </div>
-      <NEmpty v-else description="没有匹配的选择器" />
+      <NEmpty v-else description="No matching selectors" />
     </NScrollbar>
 
     <template #footer>
       <div class="flex justify-end">
         <RouterLink to="/selector/library" @click="closeDialog">
-          <NButton text type="primary">管理全部选择器</NButton>
+          <NButton text type="primary">Manage all selectors</NButton>
         </RouterLink>
       </div>
     </template>

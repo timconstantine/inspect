@@ -35,7 +35,7 @@ export const importFromLocal = async (
     }));
   const zipfiles = files.filter((f) => f.name.endsWith(`.zip`));
   if (zipfiles.length == 0) {
-    message.warning(`没有发现可导入文件`);
+    message.warning(`No importable file found`);
     return false;
   }
   let importNum = 0;
@@ -61,9 +61,9 @@ export const importFromLocal = async (
     );
   }
   if (importNum > 0) {
-    message.success(`导入${importNum}条记录`);
+    message.success(`Imported ${importNum} record(s)`);
   } else {
-    message.warning(`没有发现可导入记录`);
+    message.warning(`No importable record found`);
   }
   return importNum > 0;
 };
@@ -99,7 +99,9 @@ export const importFromNetwork = async (
           }
         }
         const resp = await enhanceFetch(url).catch((e) => {
-          message.error(`网络异常: ${new URL(url).host} / ${e.message || ''}`);
+          message.error(
+            `Network error: ${new URL(url).host} / ${e.message || ''}`,
+          );
           console.warn([`download failed`, url, e]);
           throw e;
         });
@@ -128,12 +130,12 @@ export const importFromNetwork = async (
   );
   const num = snapshots.length;
   if (num == 0) {
-    message.warning(`没有发现可导入记录`);
+    message.warning(`No importable record found`);
     return;
   } else if (num == urls.length) {
-    message.success(`导入${num}条快照`);
+    message.success(`Imported ${num} snapshot(s)`);
   } else if (num < urls.length) {
-    message.success(`导入${num}条快照，失败${urls.length - num}`);
+    message.success(`Imported ${num} snapshot(s), ${urls.length - num} failed`);
   }
   return snapshots;
 };

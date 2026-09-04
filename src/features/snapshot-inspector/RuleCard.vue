@@ -76,14 +76,14 @@ const updateRuleText = (value: string) => {
   >
     <div class="app-panel" b-1px b-solid rounded-4px p-8px>
       <div flex items-center gap-8px m-b-4px pr-4px>
-        <div>规则静态诊断</div>
+        <div>Static rule diagnostic</div>
         <NTag size="small" :type="diagnosticPresentation.type">
           {{ diagnosticPresentation.label }}
         </NTag>
         <div :ref="onRef" flex-1 cursor-move />
         <NButton
           text
-          title="重新诊断"
+          title="Re-diagnose"
           :disabled="!ruleText"
           @click="refreshDiagnostic"
         >
@@ -91,7 +91,7 @@ const updateRuleText = (value: string) => {
             <GkSvg name="refresh" />
           </template>
         </NButton>
-        <NButton text title="最小化" @click="onUpdateShow(!show)">
+        <NButton text title="Minimize" @click="onUpdateShow(!show)">
           <template #icon>
             <GkSvg name="minus" />
           </template>
@@ -101,7 +101,7 @@ const updateRuleText = (value: string) => {
       <NInput
         :value="ruleText"
         type="textarea"
-        placeholder="粘贴单条规则、规则组、应用配置或订阅中的 apps"
+        placeholder="Paste a single rule, rule group, app config, or the apps array from a subscription"
         size="small"
         class="gkd_code m-b-8px"
         :autosize="{ minRows: 10, maxRows: 20 }"
@@ -132,12 +132,12 @@ const updateRuleText = (value: string) => {
 
           <div m-t-6px text-12px color-gray-500>
             <span v-if="diagnostic.details.rulePath">
-              规则位置：{{ diagnostic.details.rulePath }}；
+              Rule location: {{ diagnostic.details.rulePath }};
             </span>
             <span>
-              命中条件
-              {{ diagnostic.details.matchedSelectors.length }} 个，未命中条件
-              {{ diagnostic.details.rejectedSelectors.length }} 个
+              {{ diagnostic.details.matchedSelectors.length }} matched
+              condition(s), {{ diagnostic.details.rejectedSelectors.length }}
+              unmatched condition(s)
             </span>
           </div>
 
@@ -147,14 +147,18 @@ const updateRuleText = (value: string) => {
             :showIcon="false"
             class="m-t-8px"
           >
-            <div>以下条件不能由单张快照完整验证：</div>
+            <div>
+              The following conditions can't be fully verified from a single
+              snapshot:
+            </div>
             <div v-for="note in diagnostic.notes" :key="note">· {{ note }}</div>
           </NAlert>
         </template>
       </div>
 
       <div v-else text-12px color-gray-500>
-        仅验证当前快照中的选择器、界面范围和排除条件，不模拟规则执行时序。
+        Only verifies the selector, screen scope, and exclusion conditions
+        against the current snapshot — rule execution timing is not simulated.
       </div>
     </div>
   </GkDraggableCard>

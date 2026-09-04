@@ -93,7 +93,8 @@ const openDatabase = async (
 };
 
 const getTableData = (table: string): SqliteDataResult => {
-  if (!database || !tableNames.has(table)) throw new Error(`数据表不存在`);
+  if (!database || !tableNames.has(table))
+    throw new Error(`Table does not exist`);
   const result = execOne(`SELECT * FROM ${quoteIdentifier(table)}`);
   return {
     columns: result?.columns || [],

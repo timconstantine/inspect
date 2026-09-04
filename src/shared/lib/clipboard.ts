@@ -11,9 +11,9 @@ export const copy = (() => {
     });
     try {
       await navigator.clipboard.writeText(text);
-      message.success('复制成功');
+      message.success('Copied');
     } catch {
-      message.error('复制失败');
+      message.error('Copy failed');
     }
   };
 })();

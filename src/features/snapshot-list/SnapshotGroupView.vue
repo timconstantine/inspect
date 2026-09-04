@@ -152,7 +152,7 @@ const getDeviceText = (snapshot: Snapshot) => {
     contentClass="h-full min-h-0 overflow-hidden"
   >
     <div v-if="!loading && !groups.length" py-40px text-center opacity-70>
-      未找到匹配快照
+      No matching snapshots found
     </div>
     <NScrollbar v-else class="h-full min-h-0">
       <NCollapse v-model:expandedNames="expandedApps" :accordion="false">
@@ -173,11 +173,11 @@ const getDeviceText = (snapshot: Snapshot) => {
                   setChecked(getAppIds(group.activities), $event)
                 "
               />
-              <NTag type="info" size="small">应用</NTag>
+              <NTag type="info" size="small">App</NTag>
               <span class="gkd_code font-600">
                 {{ `${group.appName} (${group.appId})` }}
               </span>
-              <NTag size="small">{{ group.snapshotCount }} 个快照</NTag>
+              <NTag size="small">{{ group.snapshotCount }} snapshot(s)</NTag>
             </div>
           </template>
 
@@ -209,7 +209,7 @@ const getDeviceText = (snapshot: Snapshot) => {
                   <NTag type="success" size="small">Activity</NTag>
                   <span class="gkd_code">{{ activity.activityId }}</span>
                   <NTag size="small">
-                    {{ activity.snapshots.length }} 个快照
+                    {{ activity.snapshots.length }} snapshot(s)
                   </NTag>
                 </div>
               </template>
@@ -248,13 +248,14 @@ const getDeviceText = (snapshot: Snapshot) => {
                         size="small"
                         type="success"
                       >
-                        已查看
+                        Viewed
                       </NTag>
                       <span class="font-600">{{ snapshot.activityId }}</span>
                     </div>
                     <div mt-3px text-12px opacity-65>
                       {{ getDeviceText(snapshot) }} ·
-                      {{ snapshot.appInfo?.versionName || 'unknown' }} · 导入
+                      {{ snapshot.appInfo?.versionName || 'unknown' }} ·
+                      Imported
                       {{
                         dayjs(
                           snapshotImportTime[snapshot.id] || snapshot.id,
@@ -281,7 +282,7 @@ const getDeviceText = (snapshot: Snapshot) => {
                     secondary
                     @click="showMore(group.appId, activity.activityId)"
                   >
-                    显示更多
+                    Show more
                   </NButton>
                 </div>
               </div>
@@ -317,14 +318,14 @@ const getDeviceText = (snapshot: Snapshot) => {
           :src="previewCache.urls[previewSnapshot.id]"
           class="block h-auto w-auto max-w-full rounded-6px"
           :style="{ maxHeight: `${previewMaxHeight}px` }"
-          alt="快照预览"
+          alt="Snapshot preview"
         />
         <div v-else py-20px text-center opacity-70>
           {{
             previewCache.errors[previewSnapshot.id] ||
             (previewCache.loading[previewSnapshot.id]
-              ? '预览加载中...'
-              : '暂无预览图')
+              ? 'Loading preview...'
+              : 'No preview image yet')
           }}
         </div>
       </div>

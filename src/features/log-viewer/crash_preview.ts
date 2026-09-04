@@ -178,7 +178,7 @@ export const getUnreadableCrashDetail = (
 export const getUnsupportedCrashSummary = (path: string): CrashSummary => ({
   ...getBaseSummary(path),
   status: `unsupported`,
-  error: `仅支持 JSON 崩溃记录`,
+  error: `Only JSON crash records are supported`,
 });
 
 export const getUnsupportedCrashDetail = (path: string): CrashDetail => ({

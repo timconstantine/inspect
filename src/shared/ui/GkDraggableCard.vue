@@ -152,7 +152,7 @@ const endMove = () => {
   emitCurrentValue();
 };
 
-// move 事件应该给 window. 如果给目标元素,容易出现鼠标移速过快无法跟随的bug
+// move events should be bound on window - binding them on the target element makes it easy for a fast mouse move to outrun the element and stop tracking
 onMounted(() => {
   window.addEventListener('pointermove', move);
   window.addEventListener('pointerup', endMove);

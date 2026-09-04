@@ -13,9 +13,9 @@ const {
 </script>
 
 <template>
-  <!-- Teleport 需要单独一个组件否则 hmr 错误 -->
+  <!-- Teleport needs to be its own component, otherwise HMR breaks -->
   <Teleport v-if="screenshotUrl" to="body">
-    <!-- 渲染在外部防止被遮挡 -->
+    <!-- render outside to avoid being clipped -->
     <div
       v-show="imgHover"
       :style="{

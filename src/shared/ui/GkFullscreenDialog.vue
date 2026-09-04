@@ -30,7 +30,7 @@ const emit = defineEmits<{
 }>();
 
 const actualShow = shallowRef(show.value);
-const state = shallowRef<'enter' | 'leave'>(); // 第一次进入不做动画
+const state = shallowRef<'enter' | 'leave'>(); // no animation on the first mount
 const duration = 300;
 let taskId = 0;
 const clearTask = () => {

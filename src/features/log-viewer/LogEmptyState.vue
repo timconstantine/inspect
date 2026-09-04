@@ -14,13 +14,18 @@ defineEmits<{ open: [] }>();
       >
         <GkSvg name="import" class="mb-18px h-48px w-48px" />
         <div name="drop-title" class="text-20px font-600">
-          {{ loading ? '正在下载并解析日志包…' : '拖拽 ZIP 到这里' }}
+          {{
+            loading
+              ? 'Downloading and parsing the log archive…'
+              : 'Drop a ZIP here'
+          }}
         </div>
         <div name="drop-description" class="mt-8px text-[#64748b]">
-          或点击选择本地 ZIP 文件
+          or click to choose a local ZIP file
         </div>
         <div name="privacy-tip" class="mt-24px text-12px text-[#94a3b8]">
-          文件只在当前浏览器中解析，不会上传；远程日志会在本机缓存最多 7 天
+          Files are only parsed in this browser, never uploaded; remote logs are
+          cached locally for up to 7 days
         </div>
       </div>
     </NSpin>

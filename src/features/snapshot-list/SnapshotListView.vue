@@ -110,7 +110,7 @@ const columns: DataTableColumns<Snapshot> = reactive([
   activityIdCol,
   {
     key: `actions`,
-    title: `操作`,
+    title: `Actions`,
     fixed: 'right',
     width: `160px`,
     render(row) {
@@ -210,8 +210,8 @@ const inputImportRef = shallowRef();
         <NButtonGroup>
           <NButton
             :type="viewMode == 'table' ? 'primary' : 'default'"
-            title="表格视图"
-            aria-label="表格视图"
+            title="Table view"
+            aria-label="Table view"
             :aria-pressed="viewMode == 'table'"
             @click="setViewMode('table')"
           >
@@ -219,8 +219,8 @@ const inputImportRef = shallowRef();
           </NButton>
           <NButton
             :type="viewMode == 'group' ? 'primary' : 'default'"
-            title="分组视图"
-            aria-label="分组视图"
+            title="Group view"
+            aria-label="Group view"
             :aria-pressed="viewMode == 'group'"
             @click="setViewMode('group')"
           >
@@ -230,7 +230,7 @@ const inputImportRef = shallowRef();
         <NInputGroup>
           <NInput
             v-model:value="filterOption.query"
-            placeholder="请输入应用名称/应用ID/界面ID"
+            placeholder="Enter app name / app ID / activity ID"
             clearable
             class="min-w-320px"
             @keyup.enter="filterOption.updateQuery"
@@ -259,17 +259,17 @@ const inputImportRef = shallowRef();
               <GkSvg name="settings" />
             </NButton>
           </template>
-          设置
+          Settings
         </NTooltip>
         <NTooltip>
           <template #trigger>
             <RouterLink flex to="/selector/library">
-              <NButton text aria-label="选择器库">
+              <NButton text aria-label="Selector library">
                 <GkSvg name="selector-library" />
               </NButton>
             </RouterLink>
           </template>
-          选择器库
+          Selector library
         </NTooltip>
         <NTooltip>
           <template #trigger>
@@ -279,7 +279,7 @@ const inputImportRef = shallowRef();
               </NButton>
             </RouterLink>
           </template>
-          测试选择器
+          Test selector
         </NTooltip>
         <NPopover>
           <template #trigger>
@@ -294,10 +294,12 @@ const inputImportRef = shallowRef();
                   :loading="importLocal.loading"
                   @click="importLocal.invoke()"
                 >
-                  导入本地文件
+                  Import local file
                 </NButton>
               </template>
-              <div class="whitespace-nowrap">支持拖拽文件到页面任意位置</div>
+              <div class="whitespace-nowrap">
+                Supports dragging a file anywhere on the page
+              </div>
             </NTooltip>
             <NTooltip placement="left">
               <template #trigger>
@@ -305,15 +307,15 @@ const inputImportRef = shallowRef();
                   :loading="importNetwork.loading"
                   @click="showImportModal = true"
                 >
-                  导入网络文件
+                  Import from network
                 </NButton>
               </template>
               <div class="whitespace-nowrap">
-                支持任意位置粘贴(Ctrl+V)文本触发导入
+                Pasting (Ctrl+V) text anywhere triggers an import
               </div>
             </NTooltip>
             <RouterLink flex to="/log">
-              <NButton class="w-full">查看日志包</NButton>
+              <NButton class="w-full">View log archive</NButton>
             </RouterLink>
           </NSpace>
         </NPopover>
@@ -325,7 +327,7 @@ const inputImportRef = shallowRef();
               </NButton>
             </RouterLink>
           </template>
-          连接设备
+          Connect device
         </NTooltip>
         <NTooltip>
           <template #trigger>
@@ -340,7 +342,7 @@ const inputImportRef = shallowRef();
               </NButton>
             </a>
           </template>
-          讨论交流
+          Discussions
         </NTooltip>
         <NTooltip>
           <template #trigger>
@@ -386,11 +388,11 @@ const inputImportRef = shallowRef();
   <NModal
     :show="showImportModal"
     preset="dialog"
-    title="导入网络文件"
+    title="Import from network"
     :maskClosable="false"
     :showIcon="false"
-    positiveText="确认"
-    negativeText="取消"
+    positiveText="Confirm"
+    negativeText="Cancel"
     style="width: 800px"
     :loading="importNetwork.loading"
     @positiveClick="importNetwork.invoke"
@@ -404,7 +406,7 @@ const inputImportRef = shallowRef();
       ref="inputImportRef"
       :value="textImportValue"
       type="textarea"
-      :placeholder="`1.支持ZIP文件链接\n2.支持快照链接\n每行一个\n空白行自动忽略\n非法链接行自动忽略`"
+      :placeholder="`1. ZIP file links supported\n2. Snapshot links supported\nOne per line\nBlank lines are ignored\nInvalid link lines are ignored`"
       :autosize="{
         minRows: 8,
         maxRows: 16,

@@ -50,7 +50,7 @@ export const downloadLogArchive = async (
     );
   } catch (error) {
     if (downloadTooLarge) {
-      throw new Error(`ZIP 文件不能超过 ${formatBytes(MAX_ZIP_SIZE)}`, {
+      throw new Error(`ZIP file cannot exceed ${formatBytes(MAX_ZIP_SIZE)}`, {
         cause: error,
       });
     }
@@ -59,14 +59,17 @@ export const downloadLogArchive = async (
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
   const declaredSize = Number(response.headers.get(`content-length`) || 0);
   if (declaredSize > MAX_ZIP_SIZE) {
-    throw new Error(`ZIP 文件不能超过 ${formatBytes(MAX_ZIP_SIZE)}`);
+    throw new Error(`ZIP file cannot exceed ${formatBytes(MAX_ZIP_SIZE)}`);
   }
   let data: ArrayBuffer;
   try {
     data = await readLimitedResponse(response, MAX_ZIP_SIZE);
   } catch (error) {
-    if (error instanceof Error && error.message == `响应内容超过大小限制`) {
-      throw new Error(`ZIP 文件不能超过 ${formatBytes(MAX_ZIP_SIZE)}`, {
+    if (
+      error instanceof Error &&
+      error.message == `Response content exceeds the size limit`
+    ) {
+      throw new Error(`ZIP file cannot exceed ${formatBytes(MAX_ZIP_SIZE)}`, {
         cause: error,
       });
     }

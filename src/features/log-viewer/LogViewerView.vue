@@ -635,7 +635,7 @@ onBeforeUnmount(() => {
 const submitUrl = async () => {
   const target = getLogRoute(inputUrl.value);
   if (!target) {
-    message.warning(`请输入有效的 HTTP/HTTPS 链接`);
+    message.warning(`Enter a valid HTTP/HTTPS link`);
     return;
   }
   const fullPath = router.resolve(target).fullPath;
@@ -667,7 +667,7 @@ useEventListener(document.body, `drop`, (event) => {
   event.preventDefault();
   const files = getDragEventFiles(event);
   if (!files.some((file) => file.name.toLowerCase().endsWith(`.zip`))) {
-    message.warning(`请拖入 ZIP 文件`);
+    message.warning(`Drop a ZIP file`);
     return;
   }
   void importLocalFile(files);

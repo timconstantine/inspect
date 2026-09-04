@@ -41,7 +41,7 @@ const connect = useTask(async () => {
   const version = ++connectionVersion;
   origin.value = errorWrap(
     () => new URL(link.value.trim()),
-    () => `非法设备地址`,
+    () => `Invalid device address`,
   ).origin;
   link.value = origin.value;
   localStorage.setItem(`device_link`, link.value);
@@ -53,7 +53,7 @@ const connect = useTask(async () => {
 });
 
 const serverTitle = computed(() => {
-  if (!serverInfo.value) return '未连接设备';
+  if (!serverInfo.value) return 'No device connected';
   const d = serverInfo.value.device;
   const g = serverInfo.value.gkdAppInfo;
   return `${d.manufacturer} Android${d.release} - GKD${g.versionName}`;
@@ -71,7 +71,7 @@ const captureSnapshot = useTask(async () => {
   const screenshot = await api.getScreenshot({ id: snapshot.id });
   await snapshotStorage.setItem(snapshot.id, snapshot);
   await screenshotStorage.setItem(snapshot.id, screenshot);
-  message.success(`捕获并保存快照成功`);
+  message.success(`Snapshot captured and saved successfully`);
   await loadSnapshots();
 });
 const downloadAllSnapshot = useTask(async () => {
@@ -83,7 +83,7 @@ const downloadAllSnapshot = useTask(async () => {
     (k) => !existSnapshotIds.has(k),
   );
   if (unimportSnapshotIds.length == 0) {
-    message.success(`没有新记录可导入`);
+    message.success(`No new records to import`);
     return;
   }
   let r = 0;
@@ -104,7 +104,7 @@ const downloadAllSnapshot = useTask(async () => {
       }),
     ),
   );
-  message.success(`导入${r}条新记录`);
+  message.success(`Imported ${r} new record(s)`);
 });
 
 const {
@@ -153,7 +153,7 @@ const columns: DataTableColumns<Snapshot> = [
   activityIdCol,
   {
     key: `actions`,
-    title: `操作`,
+    title: `Actions`,
     fixed: 'right',
     width: `160px`,
     render(row) {
@@ -162,7 +162,7 @@ const columns: DataTableColumns<Snapshot> = [
           snapshot={row}
           showExport={false}
           showShare={false}
-          deleteConfirmText={`是否确认删除? 此操作不可恢复!\n快照ID:${row.id}`}
+          deleteConfirmText={`Confirm delete? This cannot be undone!\nSnapshot ID: ${row.id}`}
           onPreview={() => previewSnapshot.invoke(row)}
           previewLoading={previewSnapshot.loading[row.id]}
           onBeforeDelete={async () => await api.deleteSnapshot({ id: row.id })}
@@ -219,7 +219,7 @@ const stopConnection = () => {
   checkedRowKeys.value = [];
   setSubscriptionDialogVisible(false);
   setSelectorDialogVisible(false);
-  document.title = '连接设备';
+  document.title = 'Connect device';
 };
 </script>
 <template>
@@ -237,7 +237,7 @@ const stopConnection = () => {
       <NInputGroup>
         <NInput
           :value="link"
-          placeholder="请输入设备地址"
+          placeholder="Enter a device address"
           class="gkd_code"
           :style="{ width: `240px` }"
           @keyup.enter="connect.invoke"
@@ -255,7 +255,7 @@ const stopConnection = () => {
                   <template #icon><GkSvg name="refresh" /></template>
                 </NButton>
               </template>
-              刷新连接
+              Refresh connection
             </NTooltip>
           </template>
         </NInput>
@@ -265,7 +265,7 @@ const stopConnection = () => {
           type="error"
           @click="stopConnection"
         >
-          停止
+          Stop
         </NButton>
 
         <div
@@ -295,7 +295,7 @@ const stopConnection = () => {
               <template #icon><GkSvg name="Snapshot" /></template>
             </NButton>
           </template>
-          捕获快照
+          Capture snapshot
         </NTooltip>
         <NTooltip>
           <template #trigger>
@@ -308,7 +308,7 @@ const stopConnection = () => {
               <template #icon><GkSvg name="Down-all" /></template>
             </NButton>
           </template>
-          下载所有快照
+          Download all snapshots
         </NTooltip>
         <NTooltip>
           <template #trigger>
@@ -320,7 +320,7 @@ const stopConnection = () => {
               <template #icon><GkSvg name="CacheSub" /></template>
             </NButton>
           </template>
-          修改内存订阅
+          Edit in-memory subscription
         </NTooltip>
         <NTooltip>
           <template #trigger>
@@ -332,7 +332,7 @@ const stopConnection = () => {
               <template #icon><GkSvg name="Exe-Sel" /></template>
             </NButton>
           </template>
-          执行选择器
+          Execute selector
         </NTooltip>
       </template>
     </div>

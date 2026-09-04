@@ -22,7 +22,7 @@ export const useBatchActions = (
     beforeDeleteItem?: (id: number) => Promise<unknown>;
   } = {},
 ) => {
-  // Devicepage暂不支持批量操作
+  // Device page doesn't support batch operations yet
   const checkedSnapshots = () => {
     return Promise.all(
       checkedRowKeys.value.map(
@@ -34,10 +34,10 @@ export const useBatchActions = (
   const batchDelete = useTask(async () => {
     await new Promise((res, rej) => {
       dialog.error({
-        title: `删除`,
-        content: `是否批量删除 ${checkedRowKeys.value.length} 个快照`,
-        negativeText: `取消`,
-        positiveText: `确认`,
+        title: `Delete`,
+        content: `Batch delete ${checkedRowKeys.value.length} snapshot(s)?`,
+        negativeText: `Cancel`,
+        positiveText: `Confirm`,
         onClose: rej,
         onEsc: rej,
         onMaskClick: rej,
@@ -60,7 +60,7 @@ export const useBatchActions = (
           withTimeout(
             () => snapshotStorage.removeItem(k),
             DELETE_TIMEOUT,
-            `本地删除超时`,
+            `Local delete timed out`,
           ),
         ),
       );
@@ -75,11 +75,11 @@ export const useBatchActions = (
       const remoteFailCount = remoteFailedIds.length;
       const localFailCount = localFailedIds.length;
       if (successCount) {
-        message.success(`删除成功 ${successCount} 个`);
+        message.success(`Deleted ${successCount} successfully`);
       }
       if (remoteFailCount || localFailCount) {
         message.warning(
-          `远程删除失败 ${remoteFailCount} 个，本地删除失败 ${localFailCount} 个`,
+          `${remoteFailCount} remote delete failure(s), ${localFailCount} local delete failure(s)`,
         );
       }
       checkedRowKeys.value = allFailedIds;
@@ -89,7 +89,7 @@ export const useBatchActions = (
           withTimeout(
             () => snapshotStorage.removeItem(k),
             DELETE_TIMEOUT,
-            `本地删除超时`,
+            `Local delete timed out`,
           ),
         ),
       );
@@ -101,10 +101,10 @@ export const useBatchActions = (
       );
       if (localFailedIds.length) {
         message.warning(
-          `删除成功 ${localSuccessIds.length} 个，失败 ${localFailedIds.length} 个`,
+          `Deleted ${localSuccessIds.length} successfully, ${localFailedIds.length} failed`,
         );
       } else {
-        message.success(`删除成功 ${localSuccessIds.length} 个`);
+        message.success(`Deleted ${localSuccessIds.length} successfully`);
       }
       checkedRowKeys.value = localFailedIds;
     }

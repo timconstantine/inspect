@@ -43,37 +43,37 @@ const attrTip = computed<AttrTipMap>(() => {
   if (!node) return {};
   return {
     _id: {
-      desc: `虚拟属性(真机不可用):生成快照访问节点顺序`,
+      desc: `Virtual attribute (unavailable on a real device): the node visit order when the snapshot was generated`,
       type: 'info',
       show: true,
     },
     _pid: {
-      desc: `虚拟属性(真机不可用):父节点的 _id`,
+      desc: `Virtual attribute (unavailable on a real device): the parent node's _id`,
       type: 'info',
       show: true,
     },
     _selector: {
-      desc: `自动生成的选择器, 点击“_selector”可直接复制内容, 用于定位`,
+      desc: `Auto-generated selector; click "_selector" to copy it directly for locating the node`,
       type: 'info',
       show: true,
     },
     depth: {
-      desc: `使用此属性在某些应用上可能造成无限节点错误`,
+      desc: `Using this attribute may cause an infinite-node error on some apps`,
       type: 'info',
       show: true,
     },
     id: {
-      desc: `可快速查找`,
+      desc: `Fast-queryable`,
       type: 'quickFind',
       show: Boolean((node.quickFind || node.idQf) && node.attr.id),
     },
     vid: {
-      desc: `可快速查找`,
+      desc: `Fast-queryable`,
       type: 'quickFind',
       show: Boolean((node.quickFind || node.idQf) && node.attr.vid),
     },
     text: {
-      desc: `可快速查找`,
+      desc: `Fast-queryable`,
       type: 'quickFind',
       show: Boolean((node.quickFind || node.textQf) && node.attr.text),
     },
@@ -122,7 +122,7 @@ const selectText = computed(() => {
     @update:value="updateLayout"
   >
     <div absolute top-0 right-0 pt-4px pr-8px>
-      <NButton text title="最小化" @click="onUpdateShow(!show)">
+      <NButton text title="Minimize" @click="onUpdateShow(!show)">
         <template #icon>
           <GkSvg name="minus" />
         </template>

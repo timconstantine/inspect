@@ -89,15 +89,15 @@ const error = computed(() => {
   <div flex items-center gap-16px pt-12px px-12px>
     <PageBackButton />
     <div flex gap-16px items-center>
-      <div text-18px>测试选择器</div>
-      <div>语法高亮/错误解析</div>
+      <div text-18px>Test selector</div>
+      <div>Syntax highlighting / error parsing</div>
     </div>
   </div>
   <div flex flex-col items-center p-8px text="40px/52px">
     <NInput
       :value="inputText"
       type="textarea"
-      placeholder="请输入选择器"
+      placeholder="Enter a selector"
       class="gkd_code py-4px"
       style="--n-font-size: 20px; --n-line-height-textarea: 28px"
       :autosize="{

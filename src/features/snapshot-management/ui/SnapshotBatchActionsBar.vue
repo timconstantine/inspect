@@ -14,7 +14,7 @@ defineProps<{
   <div v-if="checkedCount" flex items-center gap-12px>
     <NPopover v-if="batchDownloadZip || batchDownloadImage">
       <template #trigger>
-        <NButton> 批量下载 </NButton>
+        <NButton> Batch download </NButton>
       </template>
       <NSpace vertical>
         <NButton
@@ -22,20 +22,20 @@ defineProps<{
           :loading="batchDownloadZip.loading"
           @click="batchDownloadZip.invoke"
         >
-          批量下载-快照
+          Batch download - Snapshots
         </NButton>
         <NButton
           v-if="batchDownloadImage"
           :loading="batchDownloadImage.loading"
           @click="batchDownloadImage.invoke"
         >
-          批量下载-图片
+          Batch download - Images
         </NButton>
       </NSpace>
     </NPopover>
     <NPopover v-if="batchShareZipUrl || batchShareImageUrl">
       <template #trigger>
-        <NButton> 批量分享 </NButton>
+        <NButton> Batch share </NButton>
       </template>
       <NSpace vertical>
         <NButton
@@ -43,14 +43,14 @@ defineProps<{
           :loading="batchShareZipUrl.loading"
           @click="batchShareZipUrl.invoke"
         >
-          批量生成链接-快照
+          Batch generate links - Snapshots
         </NButton>
         <NButton
           v-if="batchShareImageUrl"
           :loading="batchShareImageUrl.loading"
           @click="batchShareImageUrl.invoke"
         >
-          批量生成链接-图片
+          Batch generate links - Images
         </NButton>
       </NSpace>
     </NPopover>
@@ -59,8 +59,8 @@ defineProps<{
       :theme-overrides="{ color: '#D03050', textColor: 'white' }"
       @click="batchDelete.invoke"
     >
-      批量删除
+      Batch delete
     </NButton>
-    <span whitespace-nowrap>{{ `已选中 ${checkedCount} 项快照` }}</span>
+    <span whitespace-nowrap>{{ `${checkedCount} snapshot(s) selected` }}</span>
   </div>
 </template>

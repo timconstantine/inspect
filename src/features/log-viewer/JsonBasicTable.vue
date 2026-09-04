@@ -13,13 +13,13 @@ const props = withDefaults(
 const columns = computed<DataTableColumns<JsonTableRow>>(() => [
   {
     key: `key`,
-    title: props.indexed ? `索引` : `键`,
+    title: props.indexed ? `Index` : `Key`,
     width: 220,
     ellipsis: { tooltip: true },
   },
   {
     key: `value`,
-    title: `值`,
+    title: `Value`,
     render(row) {
       return (
         <span class="whitespace-pre-wrap font-mono [overflow-wrap:anywhere]">

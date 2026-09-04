@@ -57,7 +57,7 @@ export const useSnapshotPreviewCache = (
       const screenshot = await options.getScreenshot(snapshotId);
       if (disposed || revisions.get(snapshotId) !== revision) return;
       if (!screenshot) {
-        errorData[snapshotId] = '暂无预览图';
+        errorData[snapshotId] = 'No preview image yet';
         return;
       }
       const url = URL.createObjectURL(new Blob([screenshot]));
@@ -69,7 +69,7 @@ export const useSnapshotPreviewCache = (
       touch(snapshotId);
     } catch {
       if (!disposed && revisions.get(snapshotId) === revision) {
-        errorData[snapshotId] = '预览加载失败';
+        errorData[snapshotId] = 'Failed to load the preview';
       }
     } finally {
       if (!disposed && revisions.get(snapshotId) === revision) {

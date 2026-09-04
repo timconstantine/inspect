@@ -5,7 +5,8 @@ export const readLimitedResponse = async (
   const reader = response.body?.getReader();
   if (!reader) {
     const data = await response.arrayBuffer();
-    if (data.byteLength > sizeLimit) throw new Error(`响应内容超过大小限制`);
+    if (data.byteLength > sizeLimit)
+      throw new Error(`Response content exceeds the size limit`);
     return data;
   }
 
@@ -16,8 +17,8 @@ export const readLimitedResponse = async (
     if (done) break;
     byteLength += value.byteLength;
     if (byteLength > sizeLimit) {
-      await reader.cancel(`响应内容超过大小限制`);
-      throw new Error(`响应内容超过大小限制`);
+      await reader.cancel(`Response content exceeds the size limit`);
+      throw new Error(`Response content exceeds the size limit`);
     }
     chunks.push(value);
   }

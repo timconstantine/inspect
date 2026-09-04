@@ -70,7 +70,7 @@ export const getAppsPreviewData = (
     return user;
   };
 
-  addUser(currentUserId, `当前用户`, true);
+  addUser(currentUserId, `Current user`, true);
   if (Array.isArray(value.otherUsers)) {
     value.otherUsers.forEach((item) => {
       if (!isObject(item)) return;
@@ -79,7 +79,7 @@ export const getAppsPreviewData = (
       const name =
         typeof item.name == `string` && item.name.trim()
           ? item.name
-          : `用户 ${id}`;
+          : `User ${id}`;
       addUser(id, name, id == currentUserId);
     });
   }
@@ -91,7 +91,7 @@ export const getAppsPreviewData = (
     const userId = getUserId(item.userId) ?? currentUserId;
     const user = addUser(
       userId,
-      userId == currentUserId ? `当前用户` : `用户 ${userId}`,
+      userId == currentUserId ? `Current user` : `User ${userId}`,
       userId == currentUserId,
     );
     const app: DeviceApp = {

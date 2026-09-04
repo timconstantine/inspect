@@ -33,12 +33,12 @@ export const useDeviceApi = (initOrigin?: string) => {
       xhrDetails,
     ).catch((e) => {
       if (!(e instanceof DOMException && e.name == 'AbortError')) {
-        message.error(`网络错误:` + name);
+        message.error(`Network error: ` + name);
       }
       throw e;
     });
     if (!response.ok) {
-      message.error(`接口错误:` + name + `:` + response.status);
+      message.error(`API error: ` + name + `:` + response.status);
       throw response;
     }
     if (response.headers.get(`Content-Type`)?.includes(`application/json`)) {
@@ -84,7 +84,7 @@ export const useDeviceApi = (initOrigin?: string) => {
     getServerInfo: async () => jsonRpc<ServerInfo>(`getServerInfo`),
     getSnapshot: async (data: Reqid): Promise<Snapshot> => {
       if (serverInfo.value?.gkdAppInfo?.versionName === '1.10.4') {
-        // 兼容旧版本 BUG
+        // workaround for a bug in an old version
         // https://github.com/gkd-kit/gkd/blob/v1.10.4/app/src/main/kotlin/li/songe/gkd/debug/HttpService.kt#L198
         return request('snapshot?id=' + data.id).then((r) => r.json());
       }
@@ -99,7 +99,7 @@ export const useDeviceApi = (initOrigin?: string) => {
       return jsonRpc(`updateSubscription`, {
         ...data,
         id: -1,
-        name: '内存订阅',
+        name: 'In-memory subscription',
         version: 0,
       });
     },

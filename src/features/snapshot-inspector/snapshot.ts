@@ -263,7 +263,7 @@ export const useSnapshotStore = createSharedComposable(() => {
     if (!currentSnapshot || revision != loadRevision) return;
     snapshotMetadataActions.setViewedTime(currentSnapshot.id, Date.now());
     document.title =
-      '快照-' + (getAppInfo(currentSnapshot).name || currentSnapshot.appId);
+      'Snapshot-' + (getAppInfo(currentSnapshot).name || currentSnapshot.appId);
     await applyUrlFocus();
 
     let currentImportId = importId.value;

@@ -31,7 +31,7 @@ defineExpose({ openLocalFile });
   <div name="log-toolbar" class="h-42px flex items-center gap-10px">
     <PageBackButton />
     <div name="log-title" class="flex-none text-18px font-600">
-      日志包查看器
+      Log Archive Viewer
     </div>
     <a
       v-if="logVersionInfo"
@@ -46,16 +46,16 @@ defineExpose({ openLocalFile });
       <NInput
         :value="inputUrl"
         clearable
-        placeholder="粘贴 GitHub、f.gkd.li 或其他 ZIP 链接"
+        placeholder="Paste a GitHub, f.gkd.li, or other ZIP link"
         @update:value="emit('update:inputUrl', $event)"
         @keyup.enter="emit('submit')"
       />
       <NButton type="primary" :loading="archiveLoading" @click="emit('submit')">
-        加载链接
+        Load link
       </NButton>
     </NInputGroup>
     <NButton :disabled="archiveLoading" @click="openLocalFile">
-      选择本地 ZIP
+      Choose local ZIP
     </NButton>
     <input
       ref="localFileInput"

@@ -15,8 +15,8 @@ export const getFastQueryEvidence = (
   if (selector.fastQueryList.length == 0) {
     return {
       status: 'unsupported',
-      label: '未启用快查',
-      reason: '选择器没有可转换为 id、vid 或 text 快查条件的表达式。',
+      label: 'Fast query not enabled',
+      reason: `The selector has no expression that can be converted into an id, vid, or text fast-query condition.`,
     };
   }
 
@@ -33,8 +33,8 @@ export const getFastQueryEvidence = (
     ) {
       return {
         status: 'supported',
-        label: 'id 快查可用',
-        reason: `目标节点的 id「${node.attr.id}」命中选择器快查条件。`,
+        label: 'id fast query available',
+        reason: `The target node's id "${node.attr.id}" matches the selector's fast-query condition.`,
       };
     }
     if (
@@ -47,8 +47,8 @@ export const getFastQueryEvidence = (
     ) {
       return {
         status: 'supported',
-        label: 'vid 快查可用',
-        reason: `目标节点的 vid「${node.attr.vid}」命中选择器快查条件。`,
+        label: 'vid fast query available',
+        reason: `The target node's vid "${node.attr.vid}" matches the selector's fast-query condition.`,
       };
     }
     if (
@@ -61,16 +61,15 @@ export const getFastQueryEvidence = (
     ) {
       return {
         status: 'supported',
-        label: 'text 快查可用',
-        reason: '目标节点的 text 命中选择器快查条件。',
+        label: 'text fast query available',
+        reason: `The target node's text matches the selector's fast-query condition.`,
       };
     }
   }
 
   return {
     status: 'unknown',
-    label: '快查待确认',
-    reason:
-      '选择器包含快查条件，但当前匹配目标没有对应的 quickFind 标记；仅凭快照无法确认客户端运行时是否会采用快查。',
+    label: 'Fast query unconfirmed',
+    reason: `The selector includes a fast-query condition, but the current match target has no corresponding quickFind marker; the snapshot alone can't confirm whether the client runtime will use fast query.`,
   };
 };

@@ -79,10 +79,11 @@ const getSelectorError = (error: unknown): string => {
     return error;
   }
   if (error instanceof GkdException) {
-    return `非法选择器:` + error.outMessage;
+    return `Invalid selector: ` + error.outMessage;
   }
   return (
-    `非法选择器:` + (error instanceof Error ? error.message : String(error))
+    `Invalid selector: ` +
+    (error instanceof Error ? error.message : String(error))
   );
 };
 
@@ -104,7 +105,7 @@ const searchSelector = (text: string, notify = true) => {
     )
   ) {
     if (notify) {
-      message.warning(`不可重复选择`);
+      message.warning(`Can't select the same selector twice`);
     }
     return;
   }
@@ -112,12 +113,12 @@ const searchSelector = (text: string, notify = true) => {
   const results = selector.querySelfOrSelectorAllContext(rootNode.value);
   if (results.length == 0) {
     if (notify) {
-      message.success(`没有选择到节点`);
+      message.success(`No node selected`);
     }
     return;
   }
   if (notify) {
-    message.success(`选择到 ${results.length} 个节点`);
+    message.success(`Selected ${results.length} node(s)`);
   }
   selectorResults.unshift({
     selector,
@@ -136,7 +137,7 @@ const searchString = (text: string, notify = true) => {
     )
   ) {
     if (notify) {
-      message.warning(`不可重复搜索`);
+      message.warning(`Can't search the same text twice`);
     }
     return;
   }
@@ -151,12 +152,12 @@ const searchString = (text: string, notify = true) => {
   }
   if (results.length == 0) {
     if (notify) {
-      message.success(`没有搜索到节点`);
+      message.success(`No node found`);
     }
     return;
   }
   if (notify) {
-    message.success(`搜索到 ${results.length} 个节点`);
+    message.success(`Found ${results.length} node(s)`);
   }
   selectorResults.unshift({
     gkd: false,
@@ -336,21 +337,21 @@ const updateExpandedKeys = (keys: number[]) => {
           @update:value="updateSearchMode"
         >
           <NSpace>
-            <NRadio :value="false"> 字符搜索 </NRadio>
-            <NRadio :value="true"> 选择器查询 </NRadio>
+            <NRadio :value="false"> Text search </NRadio>
+            <NRadio :value="true"> Selector query </NRadio>
           </NSpace>
         </NRadioGroup>
         <NButton
           class="ml-12px"
           text
-          title="选择器库"
-          aria-label="选择器库"
+          title="Selector library"
+          aria-label="Selector library"
           @click="openSelectorLibrary()"
         >
           <template #icon><GkSvg name="selector-library" /></template>
         </NButton>
         <div :ref="onRef" flex-1 cursor-move />
-        <NButton text title="最小化" @click="onUpdateShow(!show)">
+        <NButton text title="Minimize" @click="onUpdateShow(!show)">
           <template #icon>
             <GkSvg name="minus" />
           </template>
@@ -358,9 +359,11 @@ const updateExpandedKeys = (keys: number[]) => {
       </div>
       <SelectorSyntaxInput
         :value="searchText"
-        :placeholder="enableSearchBySelector ? `请输入选择器` : `请输入字符`"
+        :placeholder="
+          enableSearchBySelector ? `Enter a selector` : `Enter text`
+        "
         :validate="enableSearchBySelector"
-        hint="Enter 搜索 · Shift+Enter 换行"
+        hint="Enter to search · Shift+Enter for a new line"
         @update:value="updateSearchText"
         @keydown="handleSearchKeydown"
       >
@@ -370,8 +373,8 @@ const updateExpandedKeys = (keys: number[]) => {
             type="primary"
             secondary
             size="tiny"
-            title="搜索"
-            aria-label="搜索"
+            title="Search"
+            aria-label="Search"
             @click="searchBySelector"
           >
             <template #icon>

@@ -97,7 +97,7 @@ const deleteSourceSnapshotAndOpen = async () => {
     await withTimeout(
       () => snapshotStorage.removeItem(result.sourceSnapshotId),
       DELETE_TIMEOUT,
-      '本地删除超时',
+      'Local delete timed out',
     );
     deleted = true;
     await router.push(path);
@@ -106,8 +106,8 @@ const deleteSourceSnapshotAndOpen = async () => {
     const detail = error instanceof Error ? error.message : String(error);
     message.error(
       deleted
-        ? `原快照已删除，但打开脱敏副本失败：${detail}`
-        : `删除原快照失败：${detail}`,
+        ? `Original snapshot deleted, but failed to open the redacted copy: ${detail}`
+        : `Failed to delete the original snapshot: ${detail}`,
     );
   } finally {
     deletingSourceSnapshot.value = false;
@@ -122,7 +122,7 @@ const createRedactedCopy = async (selection: RedactionSelection) => {
     const sourceScreenshot = await screenshotStorage.getItem(
       currentSnapshot.id,
     );
-    if (!sourceScreenshot) throw new Error('原始截图不存在');
+    if (!sourceScreenshot) throw new Error(`Original screenshot doesn't exist`);
     const newId = await getAvailableSnapshotId(
       Math.max(Date.now(), currentSnapshot.id + 1),
       (id) => snapshotStorage.hasItem(id),
@@ -198,10 +198,10 @@ const createRedactedCopy = async (selection: RedactionSelection) => {
       flex
       gap-4px
     >
-      <div py-1px px-2px bg="#ffffff90" title="尺寸">
+      <div py-1px px-2px bg="#ffffff90" title="Size">
         {{ `${snapshot.screenWidth}x${snapshot.screenHeight}` }}
       </div>
-      <div py-1px px-2px bg="#ffffff90" title="创建时间">
+      <div py-1px px-2px bg="#ffffff90" title="Created">
         {{ dayjs(snapshot.id).format('YYYY-MM-DD HH:mm:ss') }}
       </div>
     </div>
@@ -217,7 +217,7 @@ const createRedactedCopy = async (selection: RedactionSelection) => {
     <NModal
       :show="createdSnapshotId != null"
       preset="card"
-      title="创建完成"
+      title="Copy created"
       class="w-520px max-w-[calc(100vw-48px)]"
       :closable="!deletingSourceSnapshot"
       :closeOnEsc="!deletingSourceSnapshot"
@@ -225,12 +225,14 @@ const createRedactedCopy = async (selection: RedactionSelection) => {
       @update:show="updateCreatedSnapshotResult"
     >
       <div class="flex flex-col gap-12px">
-        <div>脱敏副本已创建，原始快照未修改。</div>
-        <div class="text-13px text-[#64748b]">新快照链接</div>
+        <div>
+          Redacted copy created; the original snapshot was not modified.
+        </div>
+        <div class="text-13px text-[#64748b]">New snapshot link</div>
         <RouterLink
           v-if="createdSnapshotPath"
           :to="createdSnapshotPath"
-          aria-label="打开创建的快照"
+          aria-label="Open the created snapshot"
           class="break-all text-[#2080f0] no-underline hover:underline"
           :class="{
             'pointer-events-none opacity-50': deletingSourceSnapshot,
@@ -254,9 +256,11 @@ const createRedactedCopy = async (selection: RedactionSelection) => {
             <template #icon>
               <GkSvg name="warn" color="#d03050" />
             </template>
-            <div>删除当前原快照并打开脱敏副本？</div>
+            <div>
+              Delete the current original snapshot and open the redacted copy?
+            </div>
             <div class="mt-4px text-12px text-[#64748b]">
-              仅删除本地快照，此操作不可恢复。
+              Only deletes the local snapshot; this cannot be undone.
             </div>
             <template #trigger>
               <NButton
@@ -264,7 +268,7 @@ const createRedactedCopy = async (selection: RedactionSelection) => {
                 type="error"
                 :disabled="deletingSourceSnapshot"
               >
-                删除原快照
+                Delete original snapshot
               </NButton>
             </template>
           </NPopconfirm>
@@ -273,7 +277,7 @@ const createRedactedCopy = async (selection: RedactionSelection) => {
             :disabled="deletingSourceSnapshot"
             @click="openCreatedSnapshot"
           >
-            打开快照
+            Open snapshot
           </NButton>
         </div>
       </template>

@@ -69,7 +69,7 @@ const isSelectorSaved = (result: SelectorSearchResult) => {
           decoration-1
           m-r-4px
           gkd_code
-          title="查询数量"
+          title="Match count"
         >
           {{ result.nodes.length }}
         </span>
@@ -79,7 +79,7 @@ const isSelectorSaved = (result: SelectorSearchResult) => {
           leading-20px
           class="app-subtle"
           gkd_code
-          :title="result.gkd ? `选择器` : `搜索字符`"
+          :title="result.gkd ? `Selector` : `Search text`"
         >
           <SelectorText
             v-if="result.gkd"
@@ -114,7 +114,7 @@ const isSelectorSaved = (result: SelectorSearchResult) => {
             v-if="result.gkd"
             size="small"
             :disabled="isSelectorSaved(result)"
-            :title="isSelectorSaved(result) ? '已收藏' : '收藏选择器'"
+            :title="isSelectorSaved(result) ? 'Saved' : 'Save selector'"
             @click.stop="emit('saveSelector', result)"
           >
             <template #icon>
@@ -133,7 +133,7 @@ const isSelectorSaved = (result: SelectorSearchResult) => {
           <NButton
             v-if="result.gkd && result.selector.canCopy"
             size="small"
-            title="复制规则"
+            title="Copy rule"
             @click.stop="emit('generateRules', result)"
           >
             <template #icon><GkSvg name="copy" /></template>
@@ -141,7 +141,7 @@ const isSelectorSaved = (result: SelectorSearchResult) => {
           <NButton
             v-if="result.gkd && result.selector.canCopy"
             size="small"
-            title="编排规则"
+            title="Compose rule"
             @click.stop="emit('composeRules', result)"
           >
             <template #icon><GkSvg name="test" /></template>
@@ -149,14 +149,14 @@ const isSelectorSaved = (result: SelectorSearchResult) => {
           <NButton
             v-if="hasZipId"
             size="small"
-            :title="result.gkd ? `复制查询链接` : `复制搜索链接`"
+            :title="result.gkd ? `Copy query link` : `Copy search link`"
             @click.stop="emit('share', result)"
           >
             <template #icon><GkSvg name="share" /></template>
           </NButton>
           <NButton
             size="small"
-            title="删除记录"
+            title="Delete record"
             @click.stop="emit('delete', index)"
           >
             <template #icon><GkSvg name="delete" /></template>

@@ -64,7 +64,7 @@ const loadSourceImage = async () => {
     const image = new Image();
     await new Promise<void>((resolve, reject) => {
       image.onload = () => resolve();
-      image.onerror = () => reject(new Error('截图加载失败'));
+      image.onerror = () => reject(new Error('Failed to load the screenshot'));
       image.src = props.sourceUrl;
     });
     sourceImage.value = image;
@@ -191,7 +191,7 @@ const applyRedaction = () => {
   <NModal
     :show="show"
     preset="card"
-    title="创建脱敏副本"
+    title="Create a redacted copy"
     class="max-w-[calc(100vw-48px)]"
     style="width: fit-content"
     :maskClosable="false"
@@ -200,8 +200,9 @@ const applyRedaction = () => {
     @update:show="emit('update:show', $event)"
   >
     <div class="mb-8px text-13px text-[#64748b]">
-      在截图上拖动框选敏感区域。副本会用纯黑色覆盖图片，并将相交节点的
-      text、desc 替换为 ***。
+      Drag on the screenshot to select sensitive areas. The copy will cover the
+      image with solid black and replace text/desc on intersecting nodes with
+      ***.
     </div>
     <NSpin :show="loading">
       <div
@@ -222,13 +223,14 @@ const applyRedaction = () => {
     <template #footer>
       <div class="flex items-center gap-8px">
         <span class="mr-auto text-12px text-[#64748b]">
-          已选择 {{ rectangles.length }} 个区域；原始快照不会被修改
+          {{ rectangles.length }} area(s) selected; the original snapshot won't
+          be modified
         </span>
         <NButtonGroup>
           <NButton
             :disabled="!canUndo"
-            title="撤销（Ctrl/⌘+Z）"
-            aria-label="撤销"
+            title="Undo (Ctrl/⌘+Z)"
+            aria-label="Undo"
             @click="undoRectangles"
           >
             <template #icon>
@@ -237,8 +239,8 @@ const applyRedaction = () => {
           </NButton>
           <NButton
             :disabled="!canRedo"
-            title="恢复（Ctrl+Y / Ctrl/⌘+Shift+Z）"
-            aria-label="恢复"
+            title="Redo (Ctrl+Y / Ctrl/⌘+Shift+Z)"
+            aria-label="Redo"
             @click="redoRectangles"
           >
             <template #icon>
@@ -252,7 +254,7 @@ const applyRedaction = () => {
               quaternary
               class="clear-selection-button"
               :disabled="!rectangles.length"
-              aria-label="清除全部区域"
+              aria-label="Clear all areas"
               @click="clearRectangles"
             >
               <template #icon>
@@ -260,14 +262,14 @@ const applyRedaction = () => {
               </template>
             </NButton>
           </template>
-          清除全部区域（可撤销）
+          Clear all areas (undoable)
         </NTooltip>
         <NButton
           type="primary"
           :disabled="!rectangles.length || loading"
           @click="applyRedaction"
         >
-          创建副本
+          Create copy
         </NButton>
       </div>
     </template>

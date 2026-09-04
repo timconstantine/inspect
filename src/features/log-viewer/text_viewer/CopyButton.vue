@@ -12,8 +12,8 @@ const { copyable, copyText } = useTextViewerState();
     circle
     size="small"
     class="absolute right-16px top-8px z-3 border border-[#e2e8f0] bg-white/92 shadow-[0_1px_3px_rgb(15_23_42_/_12%)] backdrop-blur-4px"
-    title="复制当前文件内容"
-    aria-label="复制当前文件内容"
+    title="Copy current file content"
+    aria-label="Copy current file content"
     @click="copyText"
   >
     <template #icon>

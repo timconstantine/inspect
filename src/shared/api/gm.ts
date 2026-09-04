@@ -129,7 +129,7 @@ export const GM_fetch = async (
         if (e.response instanceof Blob) {
           useNull = e.response.size === 0;
         }
-        // 返回数据为二进制时，必须指定 responseType 为 'blob' 或 'arraybuffer'，否则编码错误
+        // when the response data is binary, responseType must be 'blob' or 'arraybuffer', otherwise it gets mis-encoded
         const resp = new Response((useNull ? null : e.response) || null, {
           status: e.status,
           statusText: e.statusText,

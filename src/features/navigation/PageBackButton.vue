@@ -12,7 +12,7 @@ const { goBack } = useRouteBack();
         <NButton
           text
           style="--n-icon-size: 24px"
-          aria-label="返回上一页"
+          aria-label="Go back"
           @click="goBack"
         >
           <template #icon>
@@ -20,7 +20,7 @@ const { goBack } = useRouteBack();
           </template>
         </NButton>
       </template>
-      返回上一页
+      Go back
     </NTooltip>
   </div>
 </template>

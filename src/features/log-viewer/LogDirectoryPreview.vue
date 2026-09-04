@@ -54,15 +54,15 @@ const openDetail = (item: LogFileSummary) => {
 const columns: DataTableColumns<LogFileSummary> = [
   {
     key: `date`,
-    title: `日期`,
+    title: `Date`,
     width: 180,
     sorter: (a, b) => (a.timestamp || 0) - (b.timestamp || 0),
     render: (item) => formatLogFileDate(item.timestamp),
   },
-  { key: `fileName`, title: `文件名` },
+  { key: `fileName`, title: `File name` },
   {
     key: `size`,
-    title: `大小`,
+    title: `Size`,
     width: 140,
     sorter: (a, b) => a.size - b.size,
     render: (item) => formatBytes(item.size),
@@ -78,9 +78,9 @@ const rowProps = (item: LogFileSummary) => ({
 <template>
   <div name="log-directory-preview" class="h-full min-h-0 flex flex-col">
     <DirectoryPreviewHeader
-      title="运行日志"
+      title="Runtime logs"
       :count="items.length"
-      listLabel="日志列表"
+      listLabel="Log list"
       :listActive="activeTab == 'list'"
       :detailText="selectedItem?.fileName"
       :detailTitle="selectedItem?.path"
@@ -97,12 +97,12 @@ const rowProps = (item: LogFileSummary) => ({
         v-model:match-case="searchOptions.matchCase"
         v-model:whole-word="searchOptions.wholeWord"
         v-model:use-regex="searchOptions.useRegex"
-        placeholder="搜索日志日期或文件名"
+        placeholder="Search log date or file name"
         class="flex-none"
       />
       <NEmpty
         v-if="filteredItems.length == 0"
-        :description="query.trim() ? '没有匹配的日志文件' : '没有日志文件'"
+        :description="query.trim() ? 'No matching log files' : 'No log files'"
         class="min-h-0 flex-1"
       />
       <NDataTable
@@ -119,14 +119,18 @@ const rowProps = (item: LogFileSummary) => ({
 
     <div v-else class="min-h-0 flex flex-1 flex-col">
       <NSpin v-if="detailLoading" show class="min-h-0 flex-1" />
-      <NAlert v-else-if="detailError" type="error" title="日志文件读取失败">
+      <NAlert
+        v-else-if="detailError"
+        type="error"
+        title="Failed to read log file"
+      >
         {{ detailError }}
       </NAlert>
       <TextViewer
         v-else-if="detailPath && detailText != null"
         :key="detailPath"
         :value="detailText"
-        search-placeholder="搜索当前日志文件"
+        search-placeholder="Search current log file"
         allow-wrap
         copyable
         :sourceLinkContext="sourceLinkContext"
@@ -141,7 +145,7 @@ const rowProps = (item: LogFileSummary) => ({
           />
         </template>
       </TextViewer>
-      <NEmpty v-else description="请选择一个日志文件" />
+      <NEmpty v-else description="Select a log file" />
     </div>
   </div>
 </template>

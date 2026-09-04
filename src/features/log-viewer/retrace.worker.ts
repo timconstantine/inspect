@@ -46,13 +46,13 @@ const registerMapping = async (data: ArrayBuffer) => {
     return path.split(`/`).at(-1)?.toLowerCase() == `mapping.txt`;
   });
   if (mappingFiles.length != 1) {
-    throw new Error(`构建附件必须包含唯一的 mapping.txt`);
+    throw new Error(`Build asset must contain exactly one mapping.txt`);
   }
   const mapping = await mappingFiles[0]!.async(`string`);
   const mapId = mapping
     .match(/^#[\t ]*pg_map_id:[\t ]*([a-f\d]{64})[\t ]*$/im)?.[1]
     ?.toLowerCase();
-  if (!mapId) throw new Error(`mapping.txt 缺少有效的 pg_map_id`);
+  if (!mapId) throw new Error(`mapping.txt is missing a valid pg_map_id`);
   disposeActiveRetracer();
   activeRetracerId = createRetracer(mapping, defaultRegex(), false);
   activeMapId = mapId;
@@ -61,7 +61,7 @@ const registerMapping = async (data: ArrayBuffer) => {
 
 const retraceText = (text: string, kind: `crash` | `log`) => {
   if (activeRetracerId == null || !activeMapId) {
-    throw new Error(`mapping.txt 尚未注册`);
+    throw new Error(`mapping.txt has not been registered yet`);
   }
   const retrace = (stackTrace: string) =>
     retraceWith(activeRetracerId!, stackTrace);

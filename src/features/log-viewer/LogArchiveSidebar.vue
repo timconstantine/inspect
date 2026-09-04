@@ -40,7 +40,7 @@ const emit = defineEmits<{
           {{ archive.name }}
         </div>
         <div name="archive-stats" class="mt-3px text-12px text-[#64748b]">
-          {{ archive.entries.length }} 个文件 ·
+          {{ archive.entries.length }} files ·
           {{ formatBytes(archive.uncompressedSize) }}
         </div>
       </div>
@@ -48,8 +48,8 @@ const emit = defineEmits<{
         type="button"
         class="inline-grid h-26px w-26px flex-none cursor-pointer place-items-center rounded-4px border-0 bg-transparent p-0 text-[#64748b] hover:bg-[#e2e8f0] hover:text-[#0f172a] focus-visible:outline focus-visible:outline-1 focus-visible:outline-[#2563eb] focus-visible:outline-offset-1"
         :aria-expanded="!collapsed"
-        :aria-label="collapsed ? '展开文件列表' : '收起文件列表'"
-        :title="collapsed ? '展开文件列表' : '收起文件列表'"
+        :aria-label="collapsed ? 'Expand file list' : 'Collapse file list'"
+        :title="collapsed ? 'Expand file list' : 'Collapse file list'"
         @click="emit('update:collapsed', !collapsed)"
       >
         <GkSvg

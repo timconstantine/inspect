@@ -71,12 +71,12 @@ const pagedApps = computed(() => {
 });
 
 const getRuleTitle = (rule: unknown, index: number) => {
-  if (typeof rule == `string`) return `规则 ${index + 1}`;
+  if (typeof rule == `string`) return `Rule ${index + 1}`;
   if (rule && typeof rule == `object`) {
     const value = rule as Record<string, unknown>;
-    return String(value.name || `规则 ${index + 1}`);
+    return String(value.name || `Rule ${index + 1}`);
   }
-  return `规则 ${index + 1}`;
+  return `Rule ${index + 1}`;
 };
 
 const renderRules = (group: RawAppGroup | RawGlobalGroup) => {
@@ -121,13 +121,17 @@ const categoryColumns: DataTableColumns<
   NonNullable<RawSubscription['categories']>[number]
 > = [
   { key: `key`, title: `Key`, width: 100 },
-  { key: `name`, title: `名称` },
+  { key: `name`, title: `Name` },
   {
     key: `enable`,
-    title: `默认状态`,
+    title: `Default state`,
     width: 140,
     render(row) {
-      return row.enable == null ? `跟随规则组` : row.enable ? `启用` : `禁用`;
+      return row.enable == null
+        ? `Follows rule group`
+        : row.enable
+          ? `Enabled`
+          : `Disabled`;
     },
   },
 ];
@@ -139,18 +143,18 @@ const categoryColumns: DataTableColumns<
     class="h-full min-h-0 flex flex-col gap-12px"
   >
     <NDescriptions bordered size="small" :column="3" labelPlacement="left">
-      <NDescriptionsItem label="名称">{{ value.name }}</NDescriptionsItem>
+      <NDescriptionsItem label="Name">{{ value.name }}</NDescriptionsItem>
       <NDescriptionsItem label="ID">{{ value.id }}</NDescriptionsItem>
-      <NDescriptionsItem label="版本">{{ value.version }}</NDescriptionsItem>
-      <NDescriptionsItem v-if="value.author" label="作者">
+      <NDescriptionsItem label="Version">{{ value.version }}</NDescriptionsItem>
+      <NDescriptionsItem v-if="value.author" label="Author">
         {{ value.author }}
       </NDescriptionsItem>
-      <NDescriptionsItem v-if="safeUpdateUrl" label="更新地址">
+      <NDescriptionsItem v-if="safeUpdateUrl" label="Update URL">
         <a :href="safeUpdateUrl" target="_blank" rel="noopener noreferrer">
           {{ value.updateUrl }}
         </a>
       </NDescriptionsItem>
-      <NDescriptionsItem v-if="safeSupportUri" label="反馈地址">
+      <NDescriptionsItem v-if="safeSupportUri" label="Feedback URL">
         <a :href="safeSupportUri" target="_blank" rel="noopener noreferrer">
           {{ value.supportUri }}
         </a>
@@ -160,37 +164,37 @@ const categoryColumns: DataTableColumns<
     <div name="subscription-stats" class="flex flex-wrap gap-12px">
       <NStatistic
         v-if="statistics.apps"
-        label="应用"
+        label="Apps"
         :value="statistics.apps"
         class="min-w-120px rounded-6px border border-[#e5e7eb] bg-[#fafafa] px-14px py-10px"
       />
       <NStatistic
         v-if="statistics.appGroups"
-        label="应用规则组"
+        label="App rule groups"
         :value="statistics.appGroups"
         class="min-w-120px rounded-6px border border-[#e5e7eb] bg-[#fafafa] px-14px py-10px"
       />
       <NStatistic
         v-if="statistics.appRules"
-        label="应用规则"
+        label="App rules"
         :value="statistics.appRules"
         class="min-w-120px rounded-6px border border-[#e5e7eb] bg-[#fafafa] px-14px py-10px"
       />
       <NStatistic
         v-if="statistics.globalGroups"
-        label="全局规则组"
+        label="Global rule groups"
         :value="statistics.globalGroups"
         class="min-w-120px rounded-6px border border-[#e5e7eb] bg-[#fafafa] px-14px py-10px"
       />
       <NStatistic
         v-if="statistics.globalRules"
-        label="全局规则"
+        label="Global rules"
         :value="statistics.globalRules"
         class="min-w-120px rounded-6px border border-[#e5e7eb] bg-[#fafafa] px-14px py-10px"
       />
       <NStatistic
         v-if="statistics.categories"
-        label="分类"
+        label="Categories"
         :value="statistics.categories"
         class="min-w-120px rounded-6px border border-[#e5e7eb] bg-[#fafafa] px-14px py-10px"
       />
@@ -201,7 +205,7 @@ const categoryColumns: DataTableColumns<
       animated
       class="h-full min-h-0 [&_.n-tab-pane]:h-full [&_.n-tab-pane]:min-h-0 [&_.n-tabs-pane-wrapper]:h-full [&_.n-tabs-pane-wrapper]:min-h-0"
     >
-      <NTabPane v-if="apps.length" name="apps" tab="应用规则">
+      <NTabPane v-if="apps.length" name="apps" tab="App rules">
         <div
           name="subscription-tab-body"
           class="h-full min-h-0 flex flex-col gap-10px"
@@ -211,19 +215,19 @@ const categoryColumns: DataTableColumns<
             v-model:match-case="appSearchOptions.matchCase"
             v-model:whole-word="appSearchOptions.wholeWord"
             v-model:use-regex="appSearchOptions.useRegex"
-            placeholder="搜索应用名称或包名"
+            placeholder="Search app name or package name"
             @update:modelValue="resetAppPage"
             @update:matchCase="resetAppPage"
             @update:wholeWord="resetAppPage"
             @update:useRegex="resetAppPage"
           />
-          <NEmpty v-if="pagedApps.length == 0" description="没有匹配的应用" />
+          <NEmpty v-if="pagedApps.length == 0" description="No matching apps" />
           <NCollapse v-else accordion class="min-h-0 flex-1 overflow-auto">
             <NCollapseItem
               v-for="app in pagedApps"
               :key="app.id"
               :name="app.id"
-              :title="`${app.name || app.id} · ${app.groups.length} 个规则组`"
+              :title="`${app.name || app.id} · ${app.groups.length} rule groups`"
             >
               <div name="app-id" class="mb-10px text-[#6b7280]">
                 {{ app.id }}
@@ -240,7 +244,7 @@ const categoryColumns: DataTableColumns<
         </div>
       </NTabPane>
 
-      <NTabPane v-if="globalGroups.length" name="global" tab="全局规则">
+      <NTabPane v-if="globalGroups.length" name="global" tab="Global rules">
         <div
           name="subscription-global-groups"
           class="min-h-0 flex flex-col gap-10px overflow-auto"
@@ -259,7 +263,7 @@ const categoryColumns: DataTableColumns<
         </div>
       </NTabPane>
 
-      <NTabPane v-if="categories.length" name="categories" tab="分类">
+      <NTabPane v-if="categories.length" name="categories" tab="Categories">
         <NDataTable
           striped
           :columns="categoryColumns"
@@ -268,7 +272,7 @@ const categoryColumns: DataTableColumns<
         />
       </NTabPane>
 
-      <NTabPane name="raw" tab="原始 JSON">
+      <NTabPane name="raw" tab="Raw JSON">
         <RawJsonPreview :value="value" :raw="raw" />
       </NTabPane>
     </NTabs>

@@ -31,19 +31,25 @@ const getError = (error: unknown) => {
 const downloadBuildAssetZip = async (assetId: number, signal: AbortSignal) => {
   const targetUrl = `https://f.gkd.li/${assetId}`;
   const proxyUrl = getWorkersProxyUrl(targetUrl);
-  if (!proxyUrl) throw new Error(`无法生成构建附件下载地址`);
+  if (!proxyUrl)
+    throw new Error(`Failed to generate a download URL for the build asset`);
   const response = await fetch(proxyUrl, { credentials: `omit`, signal });
   if (!response.ok)
-    throw new Error(`构建附件下载失败: HTTP ${response.status}`);
+    throw new Error(`Build asset download failed: HTTP ${response.status}`);
   const declaredSize = Number(response.headers.get(`content-length`) || 0);
   if (declaredSize > MAX_BUILD_ASSET_ZIP_SIZE) {
-    throw new Error(`构建附件 ZIP 超过大小限制`);
+    throw new Error(`Build asset ZIP exceeds the size limit`);
   }
   try {
     return await readLimitedResponse(response, MAX_BUILD_ASSET_ZIP_SIZE);
   } catch (error) {
-    if (error instanceof Error && error.message == `响应内容超过大小限制`) {
-      throw new Error(`构建附件 ZIP 超过大小限制`, { cause: error });
+    if (
+      error instanceof Error &&
+      error.message == `Response content exceeds the size limit`
+    ) {
+      throw new Error(`Build asset ZIP exceeds the size limit`, {
+        cause: error,
+      });
     }
     throw error;
   }
@@ -54,7 +60,7 @@ const loadBuildAssetZip = async (
   signal: AbortSignal,
 ): Promise<BuildAssetZip> => {
   const asset = await getBuildAsset(buildKey, signal);
-  if (!asset) throw new Error(`未找到该版本的构建附件`);
+  if (!asset) throw new Error(`No build asset found for this version`);
   signal.throwIfAborted();
   const cached = await getBuildAssetCache(asset.assetId);
   signal.throwIfAborted();
@@ -222,7 +228,7 @@ export class LazyBuildRetracer {
       else pending.resolve(response.result);
     };
     worker.onerror = (event) => {
-      this.stopWorker(new Error(event.message || `Retrace Worker 运行失败`));
+      this.stopWorker(new Error(event.message || `Retrace Worker failed`));
     };
     this.worker = worker;
     return worker;

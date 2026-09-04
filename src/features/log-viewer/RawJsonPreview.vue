@@ -16,7 +16,7 @@ const formattedText = computed(() =>
   <div name="raw-json-preview" class="h-full">
     <TextViewer
       :value="formattedText"
-      search-placeholder="搜索原始 JSON"
+      search-placeholder="Search raw JSON"
       class="h-full"
     />
   </div>

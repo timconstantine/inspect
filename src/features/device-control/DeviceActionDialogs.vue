@@ -47,7 +47,7 @@ const useLibrarySelector = (selector: string) => {
 };
 
 const actionOptions: { value?: string; label: string }[] = [
-  { label: '仅查询', value: `` },
+  { label: 'Query only', value: `` },
   { value: 'click', label: 'click' },
   { value: 'clickNode', label: 'clickNode' },
   { value: 'clickCenter', label: 'clickCenter' },
@@ -71,10 +71,10 @@ const updateSubscription = useTask(async () => {
   } else if (Array.isArray(data) && typeof data[0].key == 'number') {
     await props.api.updateSubscription({ globalGroups: data });
   } else {
-    message.error(`无法识别的订阅文本`);
+    message.error(`Unrecognized subscription text`);
     return;
   }
-  message.success(`修改成功`);
+  message.success(`Updated successfully`);
 });
 
 const executeSelector = useTask(async () => {
@@ -83,25 +83,28 @@ const executeSelector = useTask(async () => {
     fastQuery: clickAction.quickFind,
   });
   if (result.message) {
-    message.success(`操作成功:` + result.message);
+    message.success(`Action succeeded: ` + result.message);
     return;
   }
   if (result.action) {
-    message.success((result.result ? `操作成功:` : `操作失败`) + result.action);
+    message.success(
+      (result.result ? `Action succeeded: ` : `Action failed: `) +
+        result.action,
+    );
   } else if (result.result) {
-    message.success(`查询成功`);
+    message.success(`Query succeeded`);
   }
 });
 
 const subscriptionPlaceholder = `
-请输入订阅文本(JSON5语法):
-示例1-更新单个应用的规则:
+Enter subscription text (JSON5 syntax):
+Example 1 - update rules for a single app:
 {
   id: 'appId',
   groups: []
 }
 
-示例2-更新多个应用的规则:
+Example 2 - update rules for multiple apps:
 [
   {
     id: 'appId1',
@@ -113,28 +116,28 @@ const subscriptionPlaceholder = `
   }
 ]
 
-示例3-更新全局规则(1.7.0):
+Example 3 - update a global rule (1.7.0):
 {
-  name: '全局规则-1',
+  name: 'Global rule 1',
   key: 0,
   rules: []
 }
 
-示例3-更新多个全局规则(1.7.0):
+Example 3 - update multiple global rules (1.7.0):
 [
   {
-    name: '全局规则-1',
+    name: 'Global rule 1',
     key: 0,
     rules: []
   },
   {
-    name: '全局规则-2',
+    name: 'Global rule 2',
     key: 1,
     rules: []
   }
 ]
 
-示例4-更新整个订阅(1.7.0):
+Example 4 - update the entire subscription (1.7.0):
 {
   apps: [],
   globalGroups: [],
@@ -148,9 +151,9 @@ const subscriptionPlaceholder = `
     :show="subscriptionShow"
     preset="dialog"
     style="width: 800px"
-    title="修改内存订阅"
+    title="Edit in-memory subscription"
     :maskClosable="false"
-    positiveText="确认"
+    positiveText="Confirm"
     :positiveButtonProps="{
       loading: updateSubscription.loading,
       onClick: updateSubscription.invoke,
@@ -172,9 +175,9 @@ const subscriptionPlaceholder = `
     :show="selectorShow"
     preset="dialog"
     style="width: 800px"
-    title="执行选择器"
+    title="Execute selector"
     :maskClosable="false"
-    positiveText="确认"
+    positiveText="Confirm"
     :positiveButtonProps="{
       loading: executeSelector.loading,
       onClick: executeSelector.invoke,
@@ -187,11 +190,11 @@ const subscriptionPlaceholder = `
       type="textarea"
       class="gkd_code"
       :autosize="{ minRows: 4, maxRows: 10 }"
-      placeholder="请输入合法的选择器"
+      placeholder="Enter a valid selector"
       @update:value="updateSelector"
     />
     <div class="mt-8px flex justify-end">
-      <NButton secondary @click="openSelectorLibrary">选择器库</NButton>
+      <NButton secondary @click="openSelectorLibrary">Selector library</NButton>
     </div>
     <div h-15px />
     <NSpace>
@@ -199,14 +202,14 @@ const subscriptionPlaceholder = `
         :checked="clickAction.quickFind"
         @update:checked="updateQuickFind"
       >
-        快速查找
+        Fast query
       </NCheckbox>
       <a
         href="https://gkd.li/api/interfaces/RawCommonProps.html#quickfind"
         target="_blank"
         rel="noopener noreferrer"
       >
-        查找说明
+        Query docs
       </a>
     </NSpace>
     <div h-10px />
@@ -222,7 +225,7 @@ const subscriptionPlaceholder = `
         target="_blank"
         rel="noopener noreferrer"
       >
-        操作说明
+        Action docs
       </a>
     </div>
   </NModal>

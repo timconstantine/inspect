@@ -112,7 +112,7 @@ const activityId = computed(() => {
 });
 
 const onDelete = async () => {
-  message.success(`删除成功,即将回到首页`);
+  message.success(`Deleted successfully, returning to the home page`);
   await delay(2000);
   router.replace({
     path: `/`,
@@ -137,7 +137,7 @@ const gkdVersionName = computed(() => {
               {{ deviceName }}
             </div>
           </template>
-          设备名称
+          Device name
         </NTooltip>
 
         <NTooltip>
@@ -150,7 +150,7 @@ const gkdVersionName = computed(() => {
               {{ gkdVersionName || 'null' }}
             </div>
           </template>
-          GKD 版本
+          GKD version
         </NTooltip>
 
         <div flex items-center gap-2px max-w-120px>
@@ -158,7 +158,7 @@ const gkdVersionName = computed(() => {
             <template #trigger>
               <GkSvg name="system" />
             </template>
-            {{ `${getAppInfo(snapshot).name} 是一个系统应用` }}
+            {{ `${getAppInfo(snapshot).name} is a system app` }}
           </NTooltip>
           <NTooltip>
             <template #trigger>
@@ -166,7 +166,7 @@ const gkdVersionName = computed(() => {
                 {{ getAppInfo(snapshot).name }}
               </div>
             </template>
-            应用名称
+            App name
           </NTooltip>
         </div>
 
@@ -176,7 +176,7 @@ const gkdVersionName = computed(() => {
               {{ getAppInfo(snapshot).versionName }}
             </div>
           </template>
-          版本名称
+          Version name
         </NTooltip>
 
         <NTooltip>
@@ -185,7 +185,7 @@ const gkdVersionName = computed(() => {
               {{ getAppInfo(snapshot).versionCode }}
             </div>
           </template>
-          版本代码
+          Version code
         </NTooltip>
 
         <NTooltip>
@@ -194,7 +194,7 @@ const gkdVersionName = computed(() => {
               {{ snapshot.appId }}
             </div>
           </template>
-          应用ID
+          App ID
         </NTooltip>
 
         <NTooltip>
@@ -208,7 +208,7 @@ const gkdVersionName = computed(() => {
               {{ activityId || 'null' }}
             </div>
           </template>
-          界面ID
+          Activity ID
         </NTooltip>
       </GkGapList>
       <div flex-1 />

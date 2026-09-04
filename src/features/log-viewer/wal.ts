@@ -14,7 +14,7 @@ export const getSqliteSnapshotSize = (
     snapshotSize <= 0 ||
     snapshotSize > MAX_SQLITE_SNAPSHOT_SIZE
   ) {
-    throw new Error(`SQLite WAL 快照超过可预览上限`);
+    throw new Error(`SQLite WAL snapshot exceeds the previewable limit`);
   }
   return snapshotSize;
 };
@@ -24,9 +24,10 @@ const readU32 = (view: DataView, offset: number, littleEndian = false) => {
 };
 
 const getDbPageSize = (data: Uint8Array) => {
-  if (data.byteLength < 100) throw new Error(`SQLite 主库文件过小`);
+  if (data.byteLength < 100)
+    throw new Error(`SQLite main database file is too small`);
   const magic = new TextDecoder().decode(data.subarray(0, 16));
-  if (magic != DB_MAGIC) throw new Error(`不是有效的 SQLite 数据库`);
+  if (magic != DB_MAGIC) throw new Error(`Not a valid SQLite database`);
   const value = new DataView(
     data.buffer,
     data.byteOffset,
@@ -34,7 +35,7 @@ const getDbPageSize = (data: Uint8Array) => {
   ).getUint16(16);
   const pageSize = value == 1 ? 65536 : value;
   if (pageSize < 512 || pageSize > 65536 || (pageSize & (pageSize - 1)) != 0) {
-    throw new Error(`SQLite 页大小无效`);
+    throw new Error(`Invalid SQLite page size`);
   }
   return pageSize;
 };
@@ -44,7 +45,8 @@ const checksum = (
   littleEndian: boolean,
   initial: readonly [number, number] = [0, 0],
 ) => {
-  if (data.byteLength % 8 != 0) throw new Error(`非法的 WAL 校验数据长度`);
+  if (data.byteLength % 8 != 0)
+    throw new Error(`Invalid WAL checksum data length`);
   const view = new DataView(data.buffer, data.byteOffset, data.byteLength);
   let [s0, s1] = initial;
   for (let offset = 0; offset < data.byteLength; offset += 8) {
@@ -65,23 +67,23 @@ export const materializeWalSnapshot = (
     result[19] = 1;
     return result;
   }
-  if (wal.byteLength < 32) throw new Error(`SQLite WAL 文件过小`);
+  if (wal.byteLength < 32) throw new Error(`SQLite WAL file is too small`);
 
   const walView = new DataView(wal.buffer, wal.byteOffset, wal.byteLength);
   const magic = readU32(walView, 0);
   if (magic != WAL_MAGIC_LE && magic != WAL_MAGIC_BE) {
-    throw new Error(`不是有效的 SQLite WAL 文件`);
+    throw new Error(`Not a valid SQLite WAL file`);
   }
   if (readU32(walView, 4) != WAL_VERSION) {
-    throw new Error(`不支持的 SQLite WAL 格式版本`);
+    throw new Error(`Unsupported SQLite WAL format version`);
   }
   let pageSize = readU32(walView, 8);
   if (pageSize == 1) pageSize = 65536;
   if (pageSize < 512 || pageSize > 65536 || (pageSize & (pageSize - 1)) != 0) {
-    throw new Error(`SQLite WAL 页大小无效`);
+    throw new Error(`Invalid SQLite WAL page size`);
   }
   if (pageSize != databasePageSize) {
-    throw new Error(`SQLite 主库与 WAL 页大小不一致`);
+    throw new Error(`SQLite main database and WAL page sizes don't match`);
   }
 
   const littleEndian = magic == WAL_MAGIC_LE;
@@ -90,7 +92,7 @@ export const materializeWalSnapshot = (
     headerChecksum[0] != readU32(walView, 24) ||
     headerChecksum[1] != readU32(walView, 28)
   ) {
-    throw new Error(`SQLite WAL 头部校验失败`);
+    throw new Error(`SQLite WAL header checksum failed`);
   }
 
   const salt1 = readU32(walView, 16);
@@ -141,7 +143,7 @@ export const materializeWalSnapshot = (
 
   if (lastCommitEndOffset < 0) {
     if (validFrameCount > 0 || wal.byteLength >= 32 + frameSize) {
-      throw new Error(`SQLite WAL 中没有完整的已提交事务`);
+      throw new Error(`No fully committed transaction found in the SQLite WAL`);
     }
     const result = database.slice();
     result[18] = 1;

@@ -160,7 +160,7 @@ const [provideTextViewerState, injectTextViewerState] = createInjectionState(
 
     const copyText = async () => {
       await navigator.clipboard.writeText(options.value.value);
-      message.success(`已复制当前文件内容`);
+      message.success(`Current file content copied`);
     };
 
     const resetScroll = async () => {
@@ -280,6 +280,9 @@ export const useProvideTextViewerState = provideTextViewerState;
 
 export const useTextViewerState = () => {
   const state = injectTextViewerState();
-  if (!state) throw new Error(`TextViewer 子组件必须在 TextViewer 内部使用`);
+  if (!state)
+    throw new Error(
+      `TextViewer subcomponents must be used inside a TextViewer`,
+    );
   return state;
 };

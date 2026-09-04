@@ -41,7 +41,7 @@ export const selectorLibraryActions = {
     const identity = getSelectorPresetIdentity(preset);
     await selectorLibrarySync.commit((items) => {
       if (items.some((item) => getSelectorPresetIdentity(item) == identity)) {
-        throw new Error('同一适用范围内已存在相同选择器');
+        throw new Error('The same selector already exists in this scope');
       }
       return [...items, preset];
     });
@@ -60,12 +60,15 @@ export const selectorLibraryActions = {
     let updated: SelectorPreset | undefined;
     await selectorLibrarySync.commit((items) => {
       const current = items.find((item) => item.id == id);
-      if (!current) throw new Error('选择器不存在或已被删除');
+      if (!current)
+        throw new Error(`The selector doesn't exist or has been deleted`);
       if (
         expectedUpdatedAt !== undefined &&
         current.updatedAt != expectedUpdatedAt
       ) {
-        throw new Error('选择器已在其他操作中更新，请重新编辑');
+        throw new Error(
+          'The selector was updated by another operation; please edit it again',
+        );
       }
       updated = updateSelectorPreset(current, input);
       const identity = getSelectorPresetIdentity(updated);
@@ -75,7 +78,7 @@ export const selectorLibraryActions = {
             item.id != id && getSelectorPresetIdentity(item) == identity,
         )
       ) {
-        throw new Error('同一适用范围内已存在相同选择器');
+        throw new Error('The same selector already exists in this scope');
       }
       return items.map((item) => (item.id == id ? updated! : item));
     });
